@@ -1,0 +1,33 @@
+name: Deploy (EC2 nohup)
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: MONGODB_URI
+          script: |
+            set -e
+            cd ~/Vitabit
+            printf 'MONGODB_URI=%s\n' "$MONGODB_URI" > .env
+            chmod 600 .env
+            ./run.sh
+            tail -n 50 log.txt

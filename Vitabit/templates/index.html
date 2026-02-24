@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitabit - Smart Vitamin Tracker</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #F8FAF8;          
+            --card: #ffffff;
+            --primary: #2D6A4F;     
+            --primary-light: #95D5B2;
+            --text-main: #1B4332;
+            --text-muted: #6B7280;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            --radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        /* Search Box (Pinterest Style) */
+        .search-box {
+            background: var(--card);
+            padding: 10px;
+            border-radius: 40px;
+            display: flex;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            transform: translateY(-2px);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 0 20px;
+            font-size: 1rem;
+            background: transparent;
+        }
+
+        .search-box button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #1B4332;
+        }
+
+        /* Result List */
+        #result_list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 20px;
+        }
+
+        .vitamin-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: left;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease forwards;
+            cursor: pointer;
+        }
+
+        .vitamin-summary {
+            display: flex;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vitamin-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-right: 20px;
+            background: #f0f0f0;
+        }
+
+        .vitamin-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .vitamin-info p {
+            margin: 0;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .how-to-take {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .how-to-take strong {
+            color: var(--primary);
+        }
+
+        .daily-intake {
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .intake-note {
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .vitamin-card.open .how-to-take {
+            display: block;
+        }
+    </style>
+
+    <script>
+        function fallbackImageDataUri(name) {
+            var firstChar = (name || "V").charAt(0).toUpperCase();
+            var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+                <rect width="100%" height="100%" rx="16" ry="16" fill="#95D5B2"/>
+                <text x="50%" y="56%" text-anchor="middle" fill="#1B4332" font-size="34" font-family="Arial, sans-serif">${firstChar}</text>
+            </svg>`;
+            return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+        }
+
+        function search() {
+            var keyword = $("#budget_input").val().trim();
+            if (!keyword) {
+                $("#result_list").empty().append("<p style='color:gray;'>Please enter a keyword.</p>");
+                return;
+            }
+            console.log("Searching for: " + keyword);
+
+            $.ajax({
+                url: `/search/${encodeURIComponent(keyword)}`,
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $("#result_list").empty();
+                    if(data.length === 0) {
+                        $("#result_list").append("<p style='color:gray;'>No results found.</p>");
+                        return;
+                    }
+                    for(var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var fallbackImage = fallbackImageDataUri(item.name);
+                        var imageSrc = item.image_url || fallbackImage;
+                        var cardHtml = `
+                            <li class="vitamin-card" role="button" tabindex="0">
+                                <div class="vitamin-summary">
+                                    <img src="${imageSrc}" alt="${item.name}" onerror="this.onerror=null;this.src='${fallbackImage}'">
+                                    <div class="vitamin-info">
+                                        <h3>${item.name}</h3>
+                                        <p>${item.benefit || 'No description available.'}</p>
+                                    </div>
+                                </div>
+                                <div class="how-to-take">
+                                    <strong>How to take:</strong> ${item.how_to_take || 'No dosage guidance available.'}
+                                    <div class="daily-intake">
+                                        <strong>Adult daily intake:</strong><br>
+                                        Men: ${item.male_daily_intake || 'Not provided'}<br>
+                                        Women: ${item.female_daily_intake || 'Not provided'}
+                                    </div>
+                                    <div class="intake-note">
+                                        ${item.intake_note || 'General guidance only. Check your condition, medications, and lab results with a clinician.'}
+                                    </div>
+                                </div>
+                            </li>
+                        `;
+                        $("#result_list").append(cardHtml);
+                    }
+                },
+                error: function () {
+                    alert("Error connecting to server.");
+                }
+            });
+        }
+
+        $(function () {
+            $("#budget_input").on("keydown", function (e) {
+                if (e.key === "Enter") {
+                    search();
+                }
+            });
+
+            $("#result_list").on("click", ".vitamin-card", function () {
+                $(this).toggleClass("open");
+            });
+
+            $("#result_list").on("keydown", ".vitamin-card", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    $(this).toggleClass("open");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>Vitabit🌿</h1>
+            <p>Your Smart Daily Nutrition Guide</p>
+        </header>
+
+        <div class="search-box">
+            <input id="budget_input" type="text" placeholder="Search vitamins (e.g. Vitamin C)">
+            <button onclick="search()">Search</button>
+        </div>
+
+        <ul id="result_list">
+            </ul>
+    </div>
+</body>
+</html>
