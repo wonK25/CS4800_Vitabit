@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Omega-3 icon">
+  <rect width="240" height="240" rx="44" fill="#dff0f5"/>
+  <path d="M61 122c25-30 61-50 118-46-20 15-32 35-38 53 16 1 28 9 38 23-50 7-88-7-118-30z" fill="#256b82"/>
+  <circle cx="147" cy="108" r="6" fill="#dff0f5"/>
+  <text x="88" y="168" font-family="Space Grotesk, Arial, sans-serif" font-size="26" font-weight="700" fill="#256b82">O3</text>
+</svg>

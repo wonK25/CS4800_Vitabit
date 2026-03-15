@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Calcium icon">
+  <rect width="240" height="240" rx="44" fill="#eef6eb"/>
+  <path d="M65 86c0-17 13-30 31-30h48c18 0 31 13 31 30v68c0 17-13 30-31 30H96c-18 0-31-13-31-30V86z" fill="#2f6f57"/>
+  <path d="M104 80h32" stroke="#eef6eb" stroke-width="10" stroke-linecap="round"/>
+  <text x="120" y="134" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="32" font-weight="700" fill="#eef6eb">Ca</text>
+</svg>

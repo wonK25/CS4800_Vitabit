@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Probiotics icon">
+  <rect width="240" height="240" rx="44" fill="#f4eee7"/>
+  <path d="M89 72c-18 0-33 15-33 33s15 33 33 33h9v30c0 11 9 20 20 20h4c11 0 20-9 20-20v-30h9c18 0 33-15 33-33s-15-33-33-33H89z" fill="#b78552"/>
+  <path d="M120 89v56M92 117h56" stroke="#fff7ef" stroke-width="10" stroke-linecap="round"/>
+</svg>

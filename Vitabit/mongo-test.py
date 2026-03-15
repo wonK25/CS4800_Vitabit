@@ -103,7 +103,8 @@ data = [
         "how_to_take": "Take once daily; sublingual or oral forms both work for many users",
         "male_daily_intake": "2.4 mcg/day",
         "female_daily_intake": "2.4 mcg/day",
-        "intake_note": "Vegetarians, vegans, and older adults are more likely to need supplementation."
+        "intake_note": "Vegetarians, vegans, and older adults are more likely to need supplementation.",
+        "image_url": "/static/images/vitamin-b12.svg"
     },
     {
         "name": "Vitamin C",
@@ -165,7 +166,8 @@ data = [
         "how_to_take": "Split larger doses and take with food unless using citrate",
         "male_daily_intake": "1000-1200 mg/day",
         "female_daily_intake": "1000-1200 mg/day",
-        "intake_note": "Calcium carbonate absorbs best with food. Avoid taking it at the same time as iron."
+        "intake_note": "Calcium carbonate absorbs best with food. Avoid taking it at the same time as iron.",
+        "image_url": "/static/images/calcium.svg"
     },
     {
         "name": "Magnesium",
@@ -186,7 +188,8 @@ data = [
         "how_to_take": "Take on an empty stomach if tolerated, or with a light meal if needed",
         "male_daily_intake": "8 mg/day",
         "female_daily_intake": "18 mg/day",
-        "intake_note": "Iron should ideally be matched to labs. Take away from calcium, coffee, and tea for better absorption."
+        "intake_note": "Iron should ideally be matched to labs. Take away from calcium, coffee, and tea for better absorption.",
+        "image_url": "/static/images/iron.svg"
     },
     {
         "name": "Zinc",
@@ -196,7 +199,8 @@ data = [
         "how_to_take": "Take with food to reduce nausea",
         "male_daily_intake": "11 mg/day",
         "female_daily_intake": "8 mg/day",
-        "intake_note": "Long-term high-dose zinc can reduce copper status. UL: 40 mg/day."
+        "intake_note": "Long-term high-dose zinc can reduce copper status. UL: 40 mg/day.",
+        "image_url": "/static/images/zinc.svg"
     },
     {
         "name": "Potassium",
@@ -286,7 +290,8 @@ data = [
         "how_to_take": "Take with meals, ideally split into 1 to 2 doses if using higher amounts",
         "male_daily_intake": "No established RDA; many supplements provide 250-1000 mg EPA+DHA/day",
         "female_daily_intake": "No established RDA; many supplements provide 250-1000 mg EPA+DHA/day",
-        "intake_note": "Use caution with bleeding disorders or blood thinners. Check EPA and DHA content, not just total fish oil."
+        "intake_note": "Use caution with bleeding disorders or blood thinners. Check EPA and DHA content, not just total fish oil.",
+        "image_url": "/static/images/omega-3.svg"
     },
     {
         "name": "Coenzyme Q10",
@@ -306,7 +311,8 @@ data = [
         "how_to_take": "Take daily as directed on the strain-specific product label",
         "male_daily_intake": "No established RDA; dose is strain-specific and often measured in CFU",
         "female_daily_intake": "No established RDA; dose is strain-specific and often measured in CFU",
-        "intake_note": "Effects depend heavily on the strain and dose. Refrigeration depends on the specific product, not all probiotics."
+        "intake_note": "Effects depend heavily on the strain and dose. Refrigeration depends on the specific product, not all probiotics.",
+        "image_url": "/static/images/probiotics.svg"
     },
     {
         "name": "Prebiotic Fiber",
@@ -426,7 +432,8 @@ data = [
         "how_to_take": "Take once daily with food",
         "male_daily_intake": "No single RDA; follow product label",
         "female_daily_intake": "No single RDA; follow product label",
-        "intake_note": "Useful as a base layer, but formulas vary widely and should not replace targeted treatment of deficiencies."
+        "intake_note": "Useful as a base layer, but formulas vary widely and should not replace targeted treatment of deficiencies.",
+        "image_url": "/static/images/multivitamin.svg"
     },
     {
         "name": "Women's Multivitamin",

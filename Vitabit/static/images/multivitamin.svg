@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Multivitamin icon">
+  <rect width="240" height="240" rx="44" fill="#f1ece2"/>
+  <path d="M74 82c0-14 12-26 26-26h40c14 0 26 12 26 26v76c0 14-12 26-26 26h-40c-14 0-26-12-26-26V82z" fill="#2d7a62"/>
+  <path d="M120 92v56M92 120h56" stroke="#f7f4ed" stroke-width="12" stroke-linecap="round"/>
+  <text x="120" y="206" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="700" fill="#2d7a62">Multi</text>
+</svg>
