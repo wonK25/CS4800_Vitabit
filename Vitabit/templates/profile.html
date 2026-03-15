@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitabit | Profile</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --surface: rgba(255, 252, 246, 0.92);
+            --ink: #1f2a1d;
+            --muted: #5b6556;
+            --line: rgba(31, 42, 29, 0.12);
+            --accent: #1e6b52;
+            --accent-soft: #d7eadf;
+            --danger-soft: #f8dfd5;
+            --shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
+            --radius-xl: 30px;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Instrument Sans", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(212, 168, 106, 0.28), transparent 28%),
+                radial-gradient(circle at top right, rgba(30, 107, 82, 0.14), transparent 28%),
+                linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: "Space Grotesk", sans-serif;
+            margin: 0;
+        }
+
+        p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+        .shell {
+            width: min(1200px, calc(100% - 32px));
+            margin: 24px auto 48px;
+        }
+
+        .hero, .card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-xl);
+        }
+
+        .hero, .card { padding: 24px; }
+        .hero { margin-bottom: 20px; }
+        .topbar, .section-title, .profile-chip, .tracked-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .topbar, .section-title { flex-wrap: wrap; }
+        .layout { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 20px; align-items: start; }
+        .column, .stack, .profile-list, .tracked-items-list, #meal_history, #dashboard_summary { display: grid; gap: 12px; }
+
+        .brand { display: inline-flex; gap: 12px; align-items: center; font-family: "Space Grotesk", sans-serif; font-weight: 700; }
+        .brand-link { color: inherit; text-decoration: none; }
+        .brand-mark {
+            width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--accent), #2e8b68); color: white;
+        }
+
+        .button, .ghost-button, .inline-secondary, .danger-button {
+            border: none; border-radius: 999px; padding: 10px 14px; cursor: pointer; font: inherit;
+        }
+        .button { background: var(--accent); color: white; font-weight: 600; }
+        .ghost-button { background: white; color: var(--ink); border: 1px solid var(--line); }
+        .inline-secondary { background: rgba(30, 107, 82, 0.12); color: var(--accent); }
+        .danger-button { background: var(--danger-soft); color: #8d3b1d; }
+
+        input, select {
+            width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,0.82);
+            border-radius: 16px; padding: 13px 14px; font: inherit;
+        }
+
+        details.form-panel {
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(255,255,255,0.52);
+            padding: 12px;
+            margin-top: 20px;
+        }
+
+        details.form-panel summary {
+            list-style: none;
+            cursor: pointer;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 4px 2px;
+        }
+
+        details.form-panel summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .summary-hint {
+            font-family: "Instrument Sans", sans-serif;
+            font-size: 0.92rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .form-panel-body {
+            margin-top: 14px;
+        }
+
+        .inline-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .profile-chip, .tracked-row, .box {
+            padding: 14px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.76);
+        }
+
+        .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        #profile_overview {
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+
+        #profile_overview .pill-row {
+            margin-top: 2px;
+        }
+
+        #profile_list {
+            margin-top: 6px;
+        }
+
+        #profile_form {
+            margin-top: 10px;
+        }
+
+        .mini-pill {
+            display: inline-flex; align-items: center; border-radius: 999px; padding: 10px 14px;
+            border: 1px solid var(--line); background: rgba(255,255,255,0.78);
+            white-space: nowrap;
+        }
+
+        .toggle-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .toggle-row button {
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.82);
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 9px 13px;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .toggle-row button.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .coverage-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .coverage-row {
+            display: grid;
+            gap: 7px;
+        }
+
+        .coverage-topline {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .bar-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(31, 42, 29, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #c4602f, #1e6b52);
+        }
+
+        .coverage-meta {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .field-hint {
+            font-size: 0.86rem;
+            color: var(--muted);
+            margin-top: -2px;
+        }
+
+        .page-footer {
+            margin-top: 20px;
+            padding: 18px 4px 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--line); border-radius: 20px; padding: 18px; color: var(--muted); background: rgba(255,255,255,0.5);
+        }
+
+        #tracked_items {
+            margin-top: 10px;
+        }
+
+        .list-clean { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+        .list-clean li { padding-left: 14px; position: relative; color: var(--muted); }
+        .list-clean li::before {
+            content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: #c4602f;
+        }
+
+        @media (max-width: 980px) {
+            .layout { grid-template-columns: 1fr; }
+            .inline-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <div class="topbar">
+                <a class="brand brand-link" href="/profile">
+                    <span class="brand-mark">V</span>
+                    <span>Vitabit Profile</span>
+                </a>
+                <div id="auth_topbar"></div>
+            </div>
+            <div class="section-title">
+                <div>
+                    <h1>Manage your household wellness</h1>
+                    <p>Edit profile details, switch family members, manage supplement and medication routines, and review recent meal trends.</p>
+                </div>
+                <a class="ghost-button" href="/">Back to Home</a>
+            </div>
+        </section>
+
+        <section class="layout">
+            <div class="column">
+                <section class="card">
+                    <div class="section-title">
+                        <div>
+                            <h2>Profiles</h2>
+                            <p>Manage your own profile and up to 4 household profiles.</p>
+                        </div>
+                    </div>
+                    <div id="profile_overview" class="stack"></div>
+                    <div id="profile_list" class="profile-list"></div>
+                    <details class="form-panel" id="household_panel">
+                        <summary>
+                            <span>Household Add</span>
+                            <span class="summary-hint">Add or edit a member</span>
+                        </summary>
+                        <div class="form-panel-body">
+                            <form id="profile_form" class="stack">
+                                <input id="profile_name" type="text" placeholder="Household member name">
+                                <input id="profile_relationship" type="text" placeholder="Relationship">
+                                <div class="field-hint">Example: Mom, Dad, Child, Partner</div>
+                                <div class="inline-grid">
+                                    <select id="profile_sex">
+                                        <option value="">Sex (optional)</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Non-binary">Non-binary</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                    <input id="profile_age" type="number" min="0" placeholder="Age">
+                                </div>
+                                <div class="inline-grid">
+                                    <input id="profile_height_value" type="number" min="0" step="0.1" placeholder="Height">
+                                    <select id="profile_height_unit">
+                                        <option value="cm">cm</option>
+                                        <option value="in">in</option>
+                                    </select>
+                                </div>
+                                <div class="inline-grid">
+                                    <input id="profile_weight_value" type="number" min="0" step="0.1" placeholder="Weight">
+                                    <select id="profile_weight_unit">
+                                        <option value="kg">kg</option>
+                                        <option value="lb">lb</option>
+                                    </select>
+                                </div>
+                                <input id="profile_goal" type="text" placeholder="Wellness goal (optional)">
+                                <button class="button" type="submit">Save Profile</button>
+                            </form>
+                        </div>
+                    </details>
+                </section>
+
+                <section class="card">
+                    <div class="section-title">
+                        <div>
+                            <h2>Tracked Items</h2>
+                            <p>Manage supplements and medications for the selected profile.</p>
+                        </div>
+                    </div>
+                    <form id="tracked_item_form" class="stack">
+                        <input id="tracked_name" type="text" placeholder="Supplement or medication name">
+                        <input id="tracked_time" type="time" value="08:00">
+                        <input id="tracked_notes" type="text" placeholder="Notes (optional)">
+                        <select id="tracked_type">
+                            <option value="supplement">Supplement</option>
+                            <option value="medication">Medication</option>
+                        </select>
+                        <button class="button" type="submit">Save Item</button>
+                    </form>
+                    <div id="tracked_items" class="tracked-items-list"></div>
+                </section>
+            </div>
+
+            <div class="column">
+                <section class="card">
+                    <div class="section-title">
+                        <div>
+                            <h2>Dashboard</h2>
+                            <p>Daily routine, current stack, and estimated essential vitamin and mineral coverage for this profile.</p>
+                        </div>
+                    </div>
+                    <p class="coverage-meta">Coverage is estimated from meal photo analysis, completed tracked items, and age/sex-based intake references in the catalog. Those intake references are based on official nutrition guidance such as NIH Office of Dietary Supplements fact sheets.</p>
+                    <div class="toggle-row" id="dashboard_ranges">
+                        <button type="button" data-range="today" class="active">Today</button>
+                        <button type="button" data-range="7d">7 Days</button>
+                        <button type="button" data-range="30d">30 Days</button>
+                    </div>
+                    <div id="dashboard_summary"></div>
+                </section>
+
+                <section class="card">
+                    <div class="section-title">
+                        <div>
+                            <h2>Recent Meal History</h2>
+                            <p>Latest saved meal analyses for the selected profile.</p>
+                        </div>
+                    </div>
+                    <ul id="meal_history"></ul>
+                </section>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            Vitabit estimates coverage from meal photos, tracked supplement or medication routines, and official intake references such as NIH Office of Dietary Supplements guidance. For medication changes, diagnosis, or condition-specific guidance, consult a licensed clinician or pharmacist.
+        </footer>
+    </main>
+
+    <script>
+        let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
+        let dashboardRange = "today";
+
+        function safeHtml(text) {
+            return $("<div>").text(text || "").html();
+        }
+
+        function toDisplayHeight(profile) {
+            if (profile.height_value && profile.height_unit) {
+                return profile.height_value + " " + profile.height_unit;
+            }
+            if (profile.height_cm) {
+                return profile.height_cm + " cm";
+            }
+            return "";
+        }
+
+        function toDisplayWeight(profile) {
+            if (profile.weight_value && profile.weight_unit) {
+                return profile.weight_value + " " + profile.weight_unit;
+            }
+            if (profile.weight_kg) {
+                return profile.weight_kg + " kg";
+            }
+            return "";
+        }
+
+        function normalizeHeight(value, unit) {
+            var numeric = parseFloat(value);
+            if (!numeric || numeric <= 0) return "";
+            if (unit === "in") {
+                return (numeric * 2.54).toFixed(1);
+            }
+            return numeric.toString();
+        }
+
+        function normalizeWeight(value, unit) {
+            var numeric = parseFloat(value);
+            if (!numeric || numeric <= 0) return "";
+            if (unit === "lb") {
+                return (numeric * 0.45359237).toFixed(1);
+            }
+            return numeric.toString();
+        }
+
+        function renderDashboardSummary() {
+            var target = $("#dashboard_summary");
+            if (!authState.authenticated) {
+                target.html("<div class='empty-state'>Profile data unavailable.</div>");
+                return;
+            }
+
+            var summary = authState.dashboard_summary || {};
+            var windows = summary.windows || {};
+            if (!windows[dashboardRange]) {
+                dashboardRange = summary.default_range || "today";
+            }
+            var selected = windows[dashboardRange] || {};
+            var oftenMissing = (selected.often_missing || []).length ? selected.often_missing.join(", ") : "No repeated low-coverage pattern yet";
+            var oftenCovered = (selected.often_covered || []).length ? selected.often_covered.join(", ") : "No repeated strong-coverage pattern yet";
+            var recentSummaries = (selected.recent_summaries || []).length ? selected.recent_summaries.join(" | ") : "No saved meal summaries yet";
+            var adherence = selected.adherence || {};
+            var activeStack = selected.active_stack || {};
+            var customCoverage = selected.custom_coverage || [];
+            var coverageHtml = (selected.coverage || []).slice(0, 6).map(function (item) {
+                return `
+                    <div class="coverage-row">
+                        <div class="coverage-topline">
+                            <strong>${safeHtml(item.name)}</strong>
+                            <span class="coverage-meta">${safeHtml(item.status)} · ${safeHtml(String(item.percent || 0))}%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width:${Math.max(6, item.percent || 0)}%"></div></div>
+                        <div class="coverage-meta">Reference: ${safeHtml(item.target_reference || "General wellness reference")}</div>
+                    </div>
+                `;
+            }).join("");
+            var customCoverageHtml = customCoverage.map(function (item) {
+                return `
+                    <div class="coverage-row">
+                        <div class="coverage-topline">
+                            <strong>${safeHtml(item.name)}</strong>
+                            <span class="coverage-meta">${safeHtml(item.status)} · ${safeHtml(String(item.percent || 0))}%</span>
+                        </div>
+                        <div class="bar-track"><div class="bar-fill" style="width:${Math.max(6, item.percent || 0)}%"></div></div>
+                        <div class="coverage-meta">${safeHtml(item.target_reference || "")}</div>
+                    </div>
+                `;
+            }).join("");
+
+            $("#dashboard_ranges button").removeClass("active");
+            $('#dashboard_ranges button[data-range="' + dashboardRange + '"]').addClass("active");
+            target.html(`
+                <div class="metric-grid">
+                    <div class="box"><h4>Estimated Coverage</h4><p>${safeHtml((selected.meal_count || 0) + " meal analyses used in this view")}</p></div>
+                    <div class="box"><h4>Routine Adherence</h4><p>${safeHtml((adherence.completed || 0) + " of " + (adherence.expected || 0) + " reminders completed")}</p></div>
+                    <div class="box"><h4>Active Stack</h4><p>${safeHtml((activeStack.supplements || 0) + " supplements · " + (activeStack.medications || 0) + " medications")}</p></div>
+                    <div class="box"><h4>Completion Rate</h4><p>${safeHtml(String(adherence.rate || 0) + "% for this time window")}</p></div>
+                </div>
+                <div class="box"><h4>Often Missing</h4><p>${safeHtml(oftenMissing)}</p></div>
+                <div class="box"><h4>Often Covered</h4><p>${safeHtml(oftenCovered)}</p></div>
+                <div class="box"><h4>Estimated Essential Coverage</h4><div class="coverage-list">${coverageHtml || "<p class='coverage-meta'>No coverage estimate yet.</p>"}</div></div>
+                <div class="box"><h4>Custom Dashboard Items</h4><div class="coverage-list">${customCoverageHtml || "<p class='coverage-meta'>Turn on tracked items to include them here.</p>"}</div></div>
+                <div class="box"><h4>Recent Meal Pattern</h4><p>${safeHtml(recentSummaries)}</p></div>
+            `);
+        }
+
+        function renderMealHistory() {
+            var target = $("#meal_history");
+            target.empty();
+            var items = authState.meal_history || [];
+            if (!items.length) {
+                target.html("<li class='empty-state'>No saved meal analyses for this profile yet.</li>");
+                return;
+            }
+            items.forEach(function (item) {
+                target.append(`<li class="box"><strong>${safeHtml(item.meal_summary || "Saved meal analysis")}</strong><p>${safeHtml((item.likely_gaps || []).join(", ") || "No major gaps highlighted.")}</p></li>`);
+            });
+        }
+
+        function renderProfilePage() {
+            if (!authState.authenticated) {
+                window.location.href = "/auth";
+                return;
+            }
+
+            $("#auth_topbar").html(`
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <span class="mini-pill">${safeHtml(authState.user.email)}</span>
+                    <form method="post" action="/auth/logout" style="margin:0;">
+                        <button class="ghost-button" type="submit">Log Out</button>
+                    </form>
+                </div>
+            `);
+
+            var current = authState.current_profile || {};
+            var summaryBits = [];
+            if (current.sex) summaryBits.push(current.sex);
+            if (current.age) summaryBits.push("Age " + current.age);
+            if (toDisplayHeight(current)) summaryBits.push("Height " + toDisplayHeight(current));
+            if (toDisplayWeight(current)) summaryBits.push("Weight " + toDisplayWeight(current));
+            if (current.wellness_goal) summaryBits.push("Goal: " + current.wellness_goal);
+            $("#profile_overview").html(`
+                <div class="mini-pill">Current profile: ${safeHtml(current.name || "None")}</div>
+                <div class="pill-row">${summaryBits.length ? summaryBits.map(function (bit) { return `<span class="mini-pill">${safeHtml(bit)}</span>`; }).join("") : "<span class='mini-pill'>No onboarding details saved yet</span>"}</div>
+            `);
+
+            $("#profile_list").html((authState.profiles || []).map(function (profile) {
+                var active = current._id === profile._id;
+                return `
+                    <div class="profile-chip">
+                        <div>
+                            <strong>${safeHtml(profile.name)}</strong>
+                            <p>${safeHtml(profile.relationship || "Household")}${profile.age ? " · Age " + safeHtml(profile.age) : ""}</p>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="inline-secondary" ${active ? "disabled" : ""} onclick="selectProfile('${profile._id}')">${active ? "Active" : "Switch"}</button>
+                            <button class="inline-secondary" onclick="editProfile('${profile._id}')">Edit</button>
+                            ${profile.relationship === "Self" ? "" : `<button class="danger-button" onclick="deleteProfile('${profile._id}')">Delete</button>`}
+                        </div>
+                    </div>
+                `;
+            }).join(""));
+
+            $("#tracked_items").html((authState.tracked_items || []).length ? authState.tracked_items.map(function (item) {
+                var completed = !!(authState.completion_map && authState.completion_map[item._id]);
+                return `
+                    <div class="tracked-row">
+                        <div>
+                            <strong>${safeHtml(item.name)}</strong>
+                            <p>${safeHtml(item.item_type)}${item.category ? " · " + safeHtml(item.category) : ""}${item.schedule_time ? " · " + safeHtml(item.schedule_time) : ""}${completed ? " · completed today" : ""}</p>
+                            <p class="coverage-meta">${item.show_in_dashboard ? "Included in dashboard" : "Not shown in dashboard"}</p>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="inline-secondary" onclick="toggleTrackedDashboard('${item._id}', ${item.show_in_dashboard ? "false" : "true"})">${item.show_in_dashboard ? "Hide from dashboard" : "Show in dashboard"}</button>
+                            <button class="danger-button" onclick="deleteTrackedItem('${item._id}')">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join("") : "<div class='empty-state'>No saved items for this profile yet.</div>");
+
+            renderDashboardSummary();
+            renderMealHistory();
+        }
+
+        function loadAccountData() {
+            $.getJSON("/api/me", function (data) {
+                authState = data;
+                dashboardRange = ((data.dashboard_summary || {}).default_range || dashboardRange);
+                renderProfilePage();
+            }).fail(function () {
+                window.location.href = "/auth";
+            });
+        }
+
+        function selectProfile(profileId) {
+            $.post("/api/profiles/" + profileId + "/select", function () {
+                loadAccountData();
+            });
+        }
+
+        function editProfile(profileId) {
+            var profile = (authState.profiles || []).find(function (item) { return item._id === profileId; });
+            if (!profile) return;
+            $("#profile_name").val(profile.name || "");
+            $("#profile_relationship").val(profile.relationship || "");
+            $("#profile_sex").val(profile.sex || "");
+            $("#profile_age").val(profile.age || "");
+            $("#profile_height_value").val(profile.height_value || profile.height_cm || "");
+            $("#profile_height_unit").val(profile.height_unit || "cm");
+            $("#profile_weight_value").val(profile.weight_value || profile.weight_kg || "");
+            $("#profile_weight_unit").val(profile.weight_unit || "kg");
+            $("#profile_goal").val(profile.wellness_goal || "");
+            $("#profile_form").data("edit-id", profileId);
+            $("#household_panel").attr("open", true);
+        }
+
+        function saveProfile() {
+            var heightValue = $("#profile_height_value").val().trim();
+            var heightUnit = $("#profile_height_unit").val();
+            var weightValue = $("#profile_weight_value").val().trim();
+            var weightUnit = $("#profile_weight_unit").val();
+            var payload = {
+                name: $("#profile_name").val().trim(),
+                relationship: $("#profile_relationship").val().trim(),
+                sex: $("#profile_sex").val(),
+                age: $("#profile_age").val().trim(),
+                height_value: heightValue,
+                height_unit: heightUnit,
+                height_cm: normalizeHeight(heightValue, heightUnit),
+                weight_value: weightValue,
+                weight_unit: weightUnit,
+                weight_kg: normalizeWeight(weightValue, weightUnit),
+                wellness_goal: $("#profile_goal").val().trim()
+            };
+            var editId = $("#profile_form").data("edit-id");
+            var request = editId
+                ? $.ajax({ url: "/api/profiles/" + editId, method: "PATCH", contentType: "application/json", data: JSON.stringify(payload) })
+                : $.ajax({ url: "/api/profiles", method: "POST", contentType: "application/json", data: JSON.stringify(payload) });
+
+            request.done(function () {
+                $("#profile_form").removeData("edit-id")[0].reset();
+                $("#profile_height_unit").val("cm");
+                $("#profile_weight_unit").val("kg");
+                $("#household_panel").removeAttr("open");
+                loadAccountData();
+            }).fail(function (xhr) {
+                alert((xhr.responseJSON || {}).error || "Profile could not be saved.");
+            });
+        }
+
+        function deleteProfile(profileId) {
+            if (!confirm("Delete this household profile and all of its tracked items and meal history?")) return;
+            $.ajax({ url: "/api/profiles/" + profileId, method: "DELETE" })
+                .done(loadAccountData)
+                .fail(function (xhr) { alert((xhr.responseJSON || {}).error || "Profile could not be deleted."); });
+        }
+
+        function saveTrackedItem() {
+            $.ajax({
+                url: "/api/tracked-items",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    name: $("#tracked_name").val().trim(),
+                    item_type: $("#tracked_type").val(),
+                    schedule_time: $("#tracked_time").val(),
+                    notes: $("#tracked_notes").val().trim(),
+                    source_type: "manual"
+                })
+            }).done(function () {
+                $("#tracked_item_form")[0].reset();
+                $("#tracked_time").val("08:00");
+                loadAccountData();
+            }).fail(function (xhr) {
+                alert((xhr.responseJSON || {}).error || "Item could not be saved.");
+            });
+        }
+
+        function deleteTrackedItem(itemId) {
+            $.ajax({ url: "/api/tracked-items/" + itemId, method: "DELETE" }).done(loadAccountData);
+        }
+
+        function toggleTrackedDashboard(itemId, nextValue) {
+            $.ajax({
+                url: "/api/tracked-items/" + itemId + "/dashboard",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ show_in_dashboard: nextValue })
+            }).done(loadAccountData);
+        }
+
+        $(function () {
+            loadAccountData();
+            $("#dashboard_ranges").on("click", "button", function () {
+                dashboardRange = $(this).data("range");
+                renderDashboardSummary();
+            });
+            $("#profile_form").on("submit", function (e) {
+                e.preventDefault();
+                saveProfile();
+            });
+            $("#tracked_item_form").on("submit", function (e) {
+                e.preventDefault();
+                saveTrackedItem();
+            });
+        });
+    </script>
+</body>
+</html>

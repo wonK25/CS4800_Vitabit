@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitabit | Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Instrument Sans", sans-serif;
+            background: linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
+            color: #1f2a1d;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+
+        .wrap {
+            width: min(980px, 100%);
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 252, 246, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
+            border-radius: 30px;
+            padding: 28px;
+        }
+
+        h1, h2 {
+            font-family: "Space Grotesk", sans-serif;
+            margin: 0 0 10px;
+        }
+
+        p {
+            color: #5b6556;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .pill {
+            border-radius: 999px;
+            padding: 10px 14px;
+            border: 1px solid rgba(31, 42, 29, 0.12);
+            background: white;
+        }
+
+        form {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid rgba(31, 42, 29, 0.12);
+            border-radius: 16px;
+            padding: 13px 14px;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        button, a.button-link {
+            border: none;
+            border-radius: 999px;
+            padding: 13px 18px;
+            background: #1e6b52;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .error {
+            background: #f8dfd5;
+            color: #8d3b1d;
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+
+        .footnote {
+            margin-top: 14px;
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 820px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <section class="panel">
+            <h1>Vitabit</h1>
+            <p>Sign in to save your wellness routine, support up to 4 household profiles, and keep supplement and medication tracking in one place.</p>
+            <div class="pill-row">
+                <span class="pill">Family profiles</span>
+                <span class="pill">Supplement routines</span>
+                <span class="pill">Medication timing</span>
+                <span class="pill">AI wellness context</span>
+            </div>
+            <p class="footnote">Vitabit supports wellness tracking. For diagnosis, treatment, or medication changes, consult a licensed clinician or pharmacist.</p>
+            <p class="footnote"><a class="button-link" href="{{ url_for('index') }}">Back to homepage</a></p>
+        </section>
+
+        <section class="panel">
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <h2>Log In</h2>
+            <form method="post" action="{{ url_for('login') }}">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+            </form>
+
+            <h2 style="margin-top: 28px;">Create Account</h2>
+            <form method="post" action="{{ url_for('register') }}">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <p class="footnote">Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.</p>
+            <p class="footnote">If email delivery is configured on the server, a welcome email will be sent after sign up.</p>
+        </section>
+    </main>
+</body>
+</html>

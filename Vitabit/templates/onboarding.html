@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitabit | Quick Setup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Instrument Sans", sans-serif;
+            background: linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
+            color: #1f2a1d;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            width: min(760px, 100%);
+            background: rgba(255, 252, 246, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
+            border-radius: 30px;
+            padding: 28px;
+        }
+
+        h1, h2 {
+            font-family: "Space Grotesk", sans-serif;
+            margin: 0 0 10px;
+        }
+
+        p {
+            color: #5b6556;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        label {
+            display: grid;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            border: 1px solid rgba(31, 42, 29, 0.12);
+            border-radius: 16px;
+            padding: 13px 14px;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 13px 18px;
+            background: #1e6b52;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .ghost {
+            background: white;
+            color: #1f2a1d;
+            border: 1px solid rgba(31, 42, 29, 0.12);
+        }
+
+        .note {
+            margin-top: 14px;
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 720px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <h1>Quick Setup</h1>
+        <p>One short page so Vitabit can personalize your baseline wellness view. You can skip this and edit details later.</p>
+        <p class="note">Signed in as {{ email }}</p>
+
+        <form method="post" action="{{ url_for('complete_onboarding') }}">
+            <div class="grid">
+                <label>
+                    Sex
+                    <select name="sex">
+                        <option value="">Prefer not to say</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </label>
+                <label>
+                    Age
+                    <input type="number" min="0" max="120" name="age" placeholder="e.g. 22">
+                </label>
+                <label>
+                    Height (cm)
+                    <input type="number" min="0" step="0.1" name="height_cm" placeholder="e.g. 170">
+                </label>
+                <label>
+                    Weight (kg)
+                    <input type="number" min="0" step="0.1" name="weight_kg" placeholder="e.g. 65">
+                </label>
+            </div>
+
+            <div class="actions">
+                <button type="submit">Save and Continue</button>
+                <button class="ghost" type="submit" name="skip" value="1">Skip for Now</button>
+            </div>
+        </form>
+
+        <p class="note">For diagnosis, treatment, or medication changes, consult a licensed clinician or pharmacist.</p>
+    </main>
+</body>
+</html>

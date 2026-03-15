@@ -3,241 +3,1047 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitabit - Smart Vitamin Tracker</title>
+    <title>Vitabit | AI Supplement Tracker</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #F8FAF8;          
-            --card: #ffffff;
-            --primary: #2D6A4F;     
-            --primary-light: #95D5B2;
-            --text-main: #1B4332;
-            --text-muted: #6B7280;
-            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-            --radius: 24px;
+            --surface: rgba(255, 252, 246, 0.88);
+            --ink: #1f2a1d;
+            --muted: #5b6556;
+            --line: rgba(31, 42, 29, 0.12);
+            --accent: #1e6b52;
+            --accent-2: #c4602f;
+            --accent-soft: #d7eadf;
+            --danger-soft: #f8dfd5;
+            --shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
+            --radius-xl: 30px;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            background-color: var(--bg);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: "Instrument Sans", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(212, 168, 106, 0.28), transparent 28%),
+                radial-gradient(circle at top right, rgba(30, 107, 82, 0.14), transparent 28%),
+                linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
+        h1, h2, h3, h4 {
+            font-family: "Space Grotesk", sans-serif;
+            margin: 0;
         }
 
-        /* Hero Section */
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
+        p { margin: 0; color: var(--muted); line-height: 1.6; }
+        button, input, textarea { font: inherit; }
+
+        .shell {
+            width: min(1360px, calc(100% - 40px));
+            margin: 24px auto 48px;
         }
 
-        .hero p {
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
-        /* Search Box (Pinterest Style) */
-        .search-box {
-            background: var(--card);
-            padding: 10px;
-            border-radius: 40px;
-            display: flex;
+        .hero, .card, .vitamin-card, .chat-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.45);
             box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
+            border-radius: var(--radius-xl);
         }
 
-        .search-box:focus-within {
-            transform: translateY(-2px);
+        .hero {
+            padding: 32px 32px 40px;
+            display: grid;
+            gap: 24px;
+            background: linear-gradient(145deg, rgba(255, 250, 242, 0.92), rgba(239, 250, 244, 0.9));
+            min-height: 620px;
         }
 
-        .search-box input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 0 20px;
-            font-size: 1rem;
-            background: transparent;
+        .topbar, .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .search-box button {
-            background: var(--primary);
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            font-size: 1.15rem;
+        }
+
+        .brand-link {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent), #2e8b68);
             color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
         }
 
-        .search-box button:hover {
-            background: #1B4332;
-        }
-
-        /* Result List */
-        #result_list {
-            list-style: none;
-            padding: 0;
+        .hero-grid, .layout {
             display: grid;
             gap: 20px;
         }
 
-        .vitamin-card {
-            background: var(--card);
-            border-radius: var(--radius);
+        .hero-grid { grid-template-columns: 1fr; }
+        .layout { grid-template-columns: 1fr; margin-top: 20px; }
+        .column { display: grid; gap: 20px; align-content: start; }
+        .card { padding: 24px; }
+
+        .hero-copy h1 {
+            font-size: clamp(2.7rem, 5.8vw, 4.9rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+            margin: 0 auto 18px;
+            max-width: 9.5ch;
+            text-align: center;
+        }
+
+        .hero-copy {
+            display: grid;
+            justify-items: center;
+            text-align: center;
+            align-content: center;
+            min-height: 420px;
+        }
+
+        .hero-copy p { max-width: 54ch; font-size: 1.08rem; margin: 0 auto; }
+        .stats, .pill-row, .search-actions, .cta-row, .action-inline { display: flex; flex-wrap: wrap; gap: 10px; }
+        .cta-row { margin-top: 26px; justify-content: center; gap: 14px; }
+        .hero-utility {
+            display: grid;
+            justify-items: center;
+            gap: 14px;
+            margin-top: 6px;
+        }
+
+        .hero-utility p {
+            font-size: 0.98rem;
+            max-width: 46ch;
+        }
+
+        .chip, .mini-pill, .category-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.78);
+        }
+
+        .category-tag {
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: var(--accent-soft);
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .hero-panel {
             padding: 20px;
-            text-align: left;
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.5s ease forwards;
+            display: grid;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .hero-panel .stats > div {
+            flex: 1 1 130px;
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--line);
+        }
+
+        .hero-panel strong {
+            display: block;
+            font-size: 1.35rem;
+            font-family: "Space Grotesk", sans-serif;
+            margin-bottom: 4px;
+        }
+
+        .button, .ghost-button, .search-box button, .chat-input button, .planner-form button, .upload-form button, .action-inline button {
+            border: none;
+            border-radius: 999px;
+            padding: 13px 18px;
             cursor: pointer;
         }
 
-        .vitamin-summary {
-            display: flex;
-            align-items: center;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .vitamin-card img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin-right: 20px;
-            background: #f0f0f0;
-        }
-
-        .vitamin-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-        }
-
-        .vitamin-info p {
-            margin: 0;
-            color: var(--primary);
+        .button, .search-box button, .chat-input button, .planner-form button, .upload-form button {
+            background: var(--accent);
+            color: white;
             font-weight: 600;
-            font-size: 0.9rem;
         }
 
-        .how-to-take {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e5e7eb;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            display: none;
+        .ghost-button {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--ink);
+            border: 1px solid var(--line);
         }
 
-        .how-to-take strong {
-            color: var(--primary);
+        .cta-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
         }
 
-        .daily-intake {
-            margin-top: 8px;
-            line-height: 1.5;
+        .action-inline button {
+            background: rgba(30, 107, 82, 0.12);
+            color: var(--accent);
+            font-weight: 600;
         }
 
-        .intake-note {
-            margin-top: 8px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 10px;
         }
 
-        .vitamin-card.open .how-to-take {
+        .split-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .search-box input, .planner-form input, .chat-input textarea, .upload-form textarea, .upload-form input[type="file"] {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 13px 14px;
+            color: var(--ink);
+            outline: none;
+        }
+
+        .search-box input { border: none; background: transparent; }
+        #result_list, #schedule_list, #chat_messages, #meal_history {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 14px;
+        }
+
+        .vitamin-card, .chat-card { padding: 18px; }
+        .vitamin-summary { display: flex; gap: 16px; align-items: flex-start; }
+        .vitamin-card img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 18px;
+            background: var(--accent-soft);
+            flex-shrink: 0;
+        }
+
+        .vitamin-info { flex: 1; }
+        .vitamin-info h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .how-to-take { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: none; }
+        .vitamin-card.open .how-to-take { display: block; }
+
+        .planner-form, .upload-form, .chat-input, .analysis-grid, .column, .stack-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .account-shell, .profile-list, .tracked-items-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .profile-chip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.76);
+        }
+
+        .profile-chip button, .inline-secondary {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: rgba(30, 107, 82, 0.12);
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .tracked-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.76);
+        }
+
+        .tracked-row strong {
             display: block;
+            margin-bottom: 4px;
+        }
+
+        .tracked-row button {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: var(--danger-soft);
+            color: #8d3b1d;
+            cursor: pointer;
+        }
+
+        .profile-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-card {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.76);
+        }
+
+        .history-card strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .schedule-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.74);
+            border: 1px solid var(--line);
+        }
+
+        .schedule-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); }
+        .schedule-item strong { display: block; margin-bottom: 4px; }
+        .schedule-item button {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: var(--danger-soft);
+            color: #8d3b1d;
+            cursor: pointer;
+        }
+
+        .chat-feed { max-height: 440px; overflow-y: auto; padding-right: 4px; }
+        .chat-card.user { background: rgba(30, 107, 82, 0.14); }
+        .chat-meta {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .chat-input textarea { min-height: 96px; resize: vertical; }
+        .box {
+            border-radius: 20px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.74);
+            border: 1px solid var(--line);
+        }
+
+        .box h4 { margin-bottom: 10px; }
+        .analysis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .analysis-grid .box:first-child { grid-column: 1 / -1; }
+        .list-clean {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .list-clean li {
+            padding-left: 14px;
+            position: relative;
+            color: var(--muted);
+        }
+
+        .list-clean li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-2);
+        }
+
+        .footnote, .status-text { font-size: 0.9rem; color: var(--muted); }
+        .status-text { margin-top: 12px; }
+        .empty-state {
+            border: 1px dashed var(--line);
+            border-radius: 20px;
+            padding: 18px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        #schedule_list {
+            margin-top: 10px;
+        }
+
+        .chat-feed {
+            margin-top: 6px;
+            margin-bottom: 8px;
+        }
+
+        .chat-input textarea {
+            margin-top: 8px;
+        }
+
+        .page-footer {
+            margin-top: 20px;
+            padding: 18px 4px 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .brand-copy {
+            font-size: 0.95rem;
+            color: var(--muted);
+            max-width: 38ch;
+        }
+
+        .hidden-camera-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid, .layout { grid-template-columns: 1fr; }
+            .split-grid { grid-template-columns: 1fr; }
+            .analysis-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .shell { width: min(100% - 18px, 1200px); margin-top: 10px; }
+            .hero, .card { padding: 18px; border-radius: 26px; }
+            .hero { min-height: auto; }
+            .topbar, .section-title, .schedule-item, .vitamin-summary, .search-box {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+            .search-box button { width: 100%; }
+            .brand { max-width: none; }
+            .hero-copy { min-height: auto; }
+            .hero-copy h1 { max-width: 10ch; }
         }
     </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="hero" id="hero-top">
+            <div class="topbar">
+                <a class="brand brand-link" href="/#hero-top">
+                    <span class="brand-mark">V</span>
+                    <div>Vitabit</div>
+                </a>
+                <div id="auth_topbar">
+                    <a class="ghost-button" href="/auth">Sign In / Log In</a>
+                </div>
+            </div>
 
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <div class="hero-utility">
+                        <p class="brand-copy">Support household profiles, timed routines, AI coaching, and meal-based wellness estimates.</p>
+                    </div>
+                    <h1>Track daily wellness in one place.</h1>
+                    <p>
+                        Track supplements, medications, meals, and routines with AI support.
+                        Search the catalog, plan timing, and spot likely nutrient gaps from food photos.
+                    </p>
+                    <div class="cta-row">
+                        <a class="button cta-link" href="#coach-section">AI Wellness Coach</a>
+                        <a class="ghost-button cta-link" href="#tracking-section">Tracking</a>
+                        <a class="ghost-button cta-link" href="#meal-section">Meal Photo Estimate</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout">
+            <div class="column">
+                <section class="card" id="search-section">
+                    <div class="section-title">
+                        <div>
+                            <h2>Wellness Catalog</h2>
+                            <p>Search vitamins, minerals, probiotics, fish oil, and medication-aware wellness items.</p>
+                        </div>
+                    </div>
+                    <div class="search-box">
+                        <input id="budget_input" type="text" placeholder="Search magnesium, probiotic, multivitamin, fish oil, prenatal...">
+                        <button onclick="search()">Search</button>
+                    </div>
+                    <div id="search_status" class="status-text">Search by nutrient, benefit, or product type.</div>
+                    <ul id="result_list"></ul>
+                </section>
+
+                <div class="split-grid">
+                    <section class="card" id="coach-section">
+                        <div class="section-title">
+                            <div>
+                                <h2>AI Wellness Coach</h2>
+                                <p>Ask about timing, stacking, nutrition gaps, or general supplement and medication routine support.</p>
+                            </div>
+                        </div>
+
+                        <div class="chat-feed">
+                            <ul id="chat_messages"></ul>
+                        </div>
+
+                        <div class="chat-input">
+                            <textarea id="chat_prompt" placeholder="Ask something like: I take magnesium at night and vitamin D in the morning. What should I watch for if I also take medication and rarely eat fish?"></textarea>
+                            <button type="button" onclick="sendChat()">Send to AI Coach</button>
+                            <div id="chat_status" class="footnote">Ready. For treatment decisions or medication changes, consult a clinician.</div>
+                        </div>
+                    </section>
+
+                    <section class="card" id="tracking-section">
+                        <div class="section-title">
+                            <div>
+                                <h2>Today's Routine</h2>
+                                <p id="schedule_progress">Start with one supplement or medication reminder.</p>
+                            </div>
+                        </div>
+
+                        <form class="planner-form" id="quick_add_form">
+                            <input id="quick_name" type="text" placeholder="Quick add supplement or medication name">
+                            <input id="quick_time" type="time" value="08:00">
+                            <button type="submit">Add Reminder</button>
+                        </form>
+
+                        <ul id="schedule_list"></ul>
+                    </section>
+                </div>
+
+                <section class="card" id="meal-section">
+                    <div class="section-title">
+                        <div>
+                            <h2>Meal Photo Analysis</h2>
+                            <p>Upload a food photo to estimate what nutrients look covered today and what might still need support.</p>
+                        </div>
+                    </div>
+
+                    <div class="upload-form">
+                        <label class="button cta-link" for="meal_camera_input" style="width:fit-content;">Quick Meal Photo</label>
+                        <input id="meal_camera_input" class="hidden-camera-input" type="file" accept="image/*" capture="environment">
+                        <input id="meal_image" type="file" accept="image/*" capture="environment">
+                        <textarea id="meal_notes" placeholder="Optional note: salmon bowl with spinach, rice, avocado"></textarea>
+                        <button type="button" onclick="analyzeMeal()">Analyze Meal</button>
+                        <div id="meal_status" class="footnote">Choose or snap a meal photo. On mobile, upload starts analysis automatically.</div>
+                    </div>
+
+                    <div class="analysis-grid" style="margin-top: 16px;">
+                        <div class="box">
+                            <h4>Meal Summary</h4>
+                            <p id="meal_summary">No meal analyzed yet.</p>
+                        </div>
+                        <div class="box">
+                            <h4>Strong Signals</h4>
+                            <ul id="meal_nutrients" class="list-clean"><li>Upload a meal photo to generate estimates.</li></ul>
+                        </div>
+                        <div class="box">
+                            <h4>Likely Gaps</h4>
+                            <ul id="meal_gaps" class="list-clean"><li>Possible low areas will show here.</li></ul>
+                        </div>
+                        <div class="box">
+                            <h4>Supplement Ideas</h4>
+                            <ul id="meal_suggestions" class="list-clean"><li>Targeted ideas will appear here.</li></ul>
+                        </div>
+                        <div class="box">
+                            <h4>Recent Meal History</h4>
+                            <ul id="meal_history">
+                                <li class="empty-state">Sign in to store meal analysis history by profile.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            Vitabit estimates coverage from meal photos, tracked supplement or medication routines, and official intake references such as NIH Office of Dietary Supplements guidance. For medication changes, diagnosis, or condition-specific guidance, consult a licensed clinician or pharmacist.
+        </footer>
+    </main>
     <script>
+        const SCHEDULE_KEY = "vitabit-schedule-v1";
+        let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
+
         function fallbackImageDataUri(name) {
             var firstChar = (name || "V").charAt(0).toUpperCase();
-            var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
-                <rect width="100%" height="100%" rx="16" ry="16" fill="#95D5B2"/>
-                <text x="50%" y="56%" text-anchor="middle" fill="#1B4332" font-size="34" font-family="Arial, sans-serif">${firstChar}</text>
-            </svg>`;
+            var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" rx="18" ry="18" fill="#d7eadf"/><text x="50%" y="56%" text-anchor="middle" fill="#1e6b52" font-size="34" font-family="Arial, sans-serif">${firstChar}</text></svg>`;
             return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+        }
+
+        function safeHtml(text) {
+            return $("<div>").text(text || "").html();
+        }
+
+        function getSchedule() {
+            try {
+                return JSON.parse(localStorage.getItem(SCHEDULE_KEY) || "[]");
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function setSchedule(items) {
+            localStorage.setItem(SCHEDULE_KEY, JSON.stringify(items));
+        }
+
+        function getServerCompletion(itemId) {
+            return !!(authState.completion_map && authState.completion_map[itemId]);
+        }
+
+        function removeScheduleItem(id) {
+            setSchedule(getSchedule().filter(function (item) { return item.id !== id; }));
+            renderSchedule();
+        }
+
+        function toggleScheduleCheck(id, checked) {
+            var next = getSchedule().map(function (item) {
+                if (item.id === id) {
+                    item.completed = checked;
+                }
+                return item;
+            });
+            setSchedule(next);
+            renderSchedule();
+        }
+
+        function addToSchedule(name, time) {
+            if (authState.authenticated) {
+                saveTrackedItem(name, "", "supplement", time || "08:00", "", "quick-add");
+                return;
+            }
+            var schedule = getSchedule();
+            schedule.push({ id: Date.now().toString() + Math.random().toString(16).slice(2), name: name, time: time || "08:00", completed: false });
+            setSchedule(schedule);
+            renderSchedule();
+        }
+
+        function renderSchedule() {
+            var items = authState.authenticated
+                ? (authState.tracked_items || []).map(function (item) {
+                    return {
+                        id: item._id,
+                        name: item.name,
+                        time: item.schedule_time || "08:00",
+                        completed: getServerCompletion(item._id),
+                        item_type: item.item_type || "supplement"
+                    };
+                })
+                : getSchedule();
+            items = items.sort(function (a, b) { return a.time.localeCompare(b.time); });
+            var completed = items.filter(function (item) { return item.completed; }).length;
+            $("#schedule_count").text(items.length + " planned");
+            $("#schedule_progress").text(items.length ? completed + " / " + items.length + " completed today" : "Start with one supplement reminder");
+
+            if (!items.length) {
+                $("#schedule_list").html("<li class='empty-state'>No reminders yet. Add supplements or medications from search results, or use the quick planner below.</li>");
+                return;
+            }
+
+            $("#schedule_list").empty();
+            items.forEach(function (item) {
+                $("#schedule_list").append(`
+                    <li class="schedule-item">
+                        <input type="checkbox" ${item.completed ? "checked" : ""} onchange="${authState.authenticated ? `toggleTrackedCompletion('${item.id}', this.checked)` : `toggleScheduleCheck('${item.id}', this.checked)`}">
+                        <div>
+                            <strong>${safeHtml(item.name)}</strong>
+                            <p>${safeHtml(item.time)} reminder${item.item_type ? " · " + safeHtml(item.item_type) : ""}</p>
+                        </div>
+                        <button onclick="${authState.authenticated ? `deleteTrackedItem('${item.id}')` : `removeScheduleItem('${item.id}')`}">Remove</button>
+                    </li>
+                `);
+            });
+        }
+
+        function renderMealHistory() {
+            var target = $("#meal_history");
+            if (!target.length) {
+                return;
+            }
+            target.empty();
+            var items = authState.meal_history || [];
+            if (!authState.authenticated) {
+                target.html("<li class='empty-state'>Sign in to store meal analysis history by profile.</li>");
+                return;
+            }
+            if (!items.length) {
+                target.html("<li class='empty-state'>No saved meal analyses for this profile yet.</li>");
+                return;
+            }
+            items.forEach(function (item) {
+                target.append(`
+                    <li class="history-card">
+                        <strong>${safeHtml(item.meal_summary || "Saved meal analysis")}</strong>
+                        <p>${safeHtml((item.likely_gaps || []).join(", ") || "No major gaps highlighted.")}</p>
+                    </li>
+                `);
+            });
+        }
+
+        function renderDashboardSummary() {
+            var target = $("#dashboard_summary");
+            if (!target.length) {
+                return;
+            }
+            if (!authState.authenticated) {
+                target.html("<div class='empty-state'>Sign in to get a profile-based wellness summary.</div>");
+                return;
+            }
+
+            var summary = authState.dashboard_summary || {};
+            var frequentGaps = (summary.frequent_gaps || []).length ? summary.frequent_gaps.join(", ") : "No repeated gap pattern yet";
+            var frequentCovered = (summary.frequent_covered || []).length ? summary.frequent_covered.join(", ") : "No repeated coverage pattern yet";
+            var recentSummaries = (summary.recent_summaries || []).length ? summary.recent_summaries.join(" | ") : "No saved meal summaries yet";
+
+            target.html(`
+                <div class="box">
+                    <h4>Meal Trend Snapshot</h4>
+                    <p>${safeHtml((summary.meal_count || 0) + " saved meal analyses for this profile")}</p>
+                </div>
+                <div class="box">
+                    <h4>Frequent Gaps</h4>
+                    <p>${safeHtml(frequentGaps)}</p>
+                </div>
+                <div class="box">
+                    <h4>Frequently Covered</h4>
+                    <p>${safeHtml(frequentCovered)}</p>
+                </div>
+                <div class="box">
+                    <h4>Recent Meal Pattern</h4>
+                    <p>${safeHtml(recentSummaries)}</p>
+                </div>
+            `);
+        }
+
+        function renderAccountPanel() {
+            var panel = $("#account_panel");
+            if (!authState.authenticated) {
+                $("#auth_topbar").html('<a class="ghost-button" href="/auth">Sign In / Log In</a>');
+                if (panel.length) {
+                    panel.html(`
+                        <div class="empty-state">
+                            Save routines across devices, create up to 4 family profiles, and track supplements or medications by person.
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <a class="button" href="/auth" style="text-decoration:none;text-align:center;">Open Sign In / Sign Up</a>
+                        </div>
+                    `);
+                }
+                return;
+            }
+
+            $("#auth_topbar").html(`
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <a class="ghost-button" href="/profile" style="text-decoration:none;">Profile</a>
+                    <form method="post" action="/auth/logout" style="margin:0;">
+                        <button class="ghost-button" type="submit">Log Out</button>
+                    </form>
+                </div>
+            `);
+            if (panel.length) {
+                panel.html(`
+                    <div class="mini-pill">Current profile: ${safeHtml(authState.current_profile ? authState.current_profile.name : "None")}</div>
+                    <div class="empty-state">
+                        Profile management, household edits, saved routines, and dashboard insights now live on the dedicated Profile page.
+                    </div>
+                    <a class="button" href="/profile" style="text-decoration:none; text-align:center;">Open Profile Page</a>
+                `);
+            }
+        }
+
+        function loadAccountData() {
+            $.getJSON("/api/me", function (data) {
+                authState = data;
+                renderAccountPanel();
+                renderSchedule();
+            }).fail(function () {
+                authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
+                renderAccountPanel();
+                renderSchedule();
+            });
+        }
+
+        function saveTrackedItem(name, category, itemType, scheduleTime, notes, sourceType) {
+            if (!authState.authenticated) {
+                window.location.href = "/auth";
+                return;
+            }
+            $.ajax({
+                url: "/api/tracked-items",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    name: name,
+                    category: category || "",
+                    item_type: itemType || "supplement",
+                    schedule_time: scheduleTime || "08:00",
+                    notes: notes || "",
+                    source_type: sourceType || "manual"
+                }),
+                success: function () {
+                    loadAccountData();
+                },
+                error: function (xhr) {
+                    alert((xhr.responseJSON || {}).error || "Item could not be saved.");
+                }
+            });
+        }
+
+        function saveCatalogItem(name, category, itemType) {
+            saveTrackedItem(name, category, itemType, "08:00", "", "catalog");
+        }
+
+        function deleteTrackedItem(itemId) {
+            $.ajax({
+                url: "/api/tracked-items/" + itemId,
+                method: "DELETE",
+                success: function () {
+                    loadAccountData();
+                }
+            });
+        }
+
+        function toggleTrackedCompletion(itemId, completed) {
+            $.ajax({
+                url: "/api/tracked-items/" + itemId + "/completion",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ completed: completed }),
+                success: function () {
+                    loadAccountData();
+                }
+            });
+        }
+
+        function buildSupplementCard(item) {
+            var fallbackImage = fallbackImageDataUri(item.name);
+            var imageSrc = item.image_url || fallbackImage;
+            var safeName = safeHtml(item.name).replace(/'/g, "&#39;");
+            return `
+                <li class="vitamin-card" role="button" tabindex="0">
+                    <div class="vitamin-summary">
+                        <img src="${imageSrc}" alt="${safeHtml(item.name)}" onerror="this.onerror=null;this.src='${fallbackImage}'">
+                        <div class="vitamin-info">
+                            <span class="category-tag">${safeHtml(item.category || "Supplement")}</span>
+                            <h3>${safeHtml(item.name)}</h3>
+                            <p>${safeHtml(item.benefit || "No description available.")}</p>
+                            <div class="action-inline">
+                                <button type="button" onclick="event.stopPropagation(); addToSchedule('${safeName}', '08:00')">Add 8:00 AM</button>
+                                <button type="button" onclick="event.stopPropagation(); addToSchedule('${safeName}', '20:00')">Add 8:00 PM</button>
+                                <button type="button" onclick="event.stopPropagation(); saveCatalogItem('${safeName}', '${safeHtml(item.category || "Supplement")}', 'supplement')">Save to profile</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="how-to-take">
+                        <strong>How to take:</strong> ${safeHtml(item.how_to_take || "No dosage guidance available.")}
+                        <div class="pill-row" style="margin-top:12px;">
+                            <span class="mini-pill">Men: ${safeHtml(item.male_daily_intake || "Not provided")}</span>
+                            <span class="mini-pill">Women: ${safeHtml(item.female_daily_intake || "Not provided")}</span>
+                        </div>
+                        <div class="footnote" style="margin-top:10px;">${safeHtml(item.intake_note || "General guidance only. Check medications and health conditions with a clinician.")}</div>
+                    </div>
+                </li>
+            `;
         }
 
         function search() {
             var keyword = $("#budget_input").val().trim();
             if (!keyword) {
-                $("#result_list").empty().append("<p style='color:gray;'>Please enter a keyword.</p>");
+                $("#result_list").html("<li class='empty-state'>Type a vitamin, mineral, supplement, or wellness keyword to search.</li>");
                 return;
             }
-            console.log("Searching for: " + keyword);
+
+            $("#search_status").text("Searching...");
+            $.getJSON(`/search/${encodeURIComponent(keyword)}`, function (data) {
+                $("#result_list").empty();
+                $("#search_status").text(data.length ? data.length + " results found" : "No results found");
+                if (!data.length) {
+                    $("#result_list").html("<li class='empty-state'>No catalog items matched that keyword yet.</li>");
+                    return;
+                }
+                data.forEach(function (item) {
+                    $("#result_list").append(buildSupplementCard(item));
+                });
+            }).fail(function () {
+                $("#search_status").text("Search failed.");
+                $("#result_list").html("<li class='empty-state'>Error connecting to the server.</li>");
+            });
+        }
+
+        function appendChatMessage(role, title, body, extras) {
+            var extrasHtml = "";
+            if (extras && extras.length) {
+                extrasHtml = "<ul class='list-clean'>" + extras.map(function (item) {
+                    return "<li>" + safeHtml(item) + "</li>";
+                }).join("") + "</ul>";
+            }
+            $("#chat_messages").append(`<li class="chat-card ${role}"><div class="chat-meta">${safeHtml(title)}</div><p>${safeHtml(body)}</p>${extrasHtml}</li>`);
+            var feed = $(".chat-feed");
+            feed.scrollTop(feed[0].scrollHeight);
+        }
+
+        function sendChat() {
+            var message = $("#chat_prompt").val().trim();
+            if (!message) {
+                return;
+            }
+
+            appendChatMessage("user", "You", message, []);
+            $("#chat_prompt").val("");
+            $("#chat_status").text("Thinking...");
 
             $.ajax({
-                url: `/search/${encodeURIComponent(keyword)}`,
-                method: "GET",
-                dataType: "json",
+                url: "/assistant/chat",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ message: message }),
                 success: function (data) {
-                    $("#result_list").empty();
-                    if(data.length === 0) {
-                        $("#result_list").append("<p style='color:gray;'>No results found.</p>");
-                        return;
+                    var extras = [];
+                    (data.suggested_supplements || []).forEach(function (item) { extras.push("Suggested: " + item); });
+                    (data.reminder_tips || []).forEach(function (item) { extras.push("Tip: " + item); });
+                    if (data.safety_note) {
+                        extras.push("Safety: " + data.safety_note);
                     }
-                    for(var i = 0; i < data.length; i++) {
-                        var item = data[i];
-                        var fallbackImage = fallbackImageDataUri(item.name);
-                        var imageSrc = item.image_url || fallbackImage;
-                        var cardHtml = `
-                            <li class="vitamin-card" role="button" tabindex="0">
-                                <div class="vitamin-summary">
-                                    <img src="${imageSrc}" alt="${item.name}" onerror="this.onerror=null;this.src='${fallbackImage}'">
-                                    <div class="vitamin-info">
-                                        <h3>${item.name}</h3>
-                                        <p>${item.benefit || 'No description available.'}</p>
-                                    </div>
-                                </div>
-                                <div class="how-to-take">
-                                    <strong>How to take:</strong> ${item.how_to_take || 'No dosage guidance available.'}
-                                    <div class="daily-intake">
-                                        <strong>Adult daily intake:</strong><br>
-                                        Men: ${item.male_daily_intake || 'Not provided'}<br>
-                                        Women: ${item.female_daily_intake || 'Not provided'}
-                                    </div>
-                                    <div class="intake-note">
-                                        ${item.intake_note || 'General guidance only. Check your condition, medications, and lab results with a clinician.'}
-                                    </div>
-                                </div>
-                            </li>
-                        `;
-                        $("#result_list").append(cardHtml);
+                    appendChatMessage("assistant", "Vitabit Coach", data.answer || "No answer returned.", extras);
+                    $("#chat_status").text("Ready");
+                },
+                error: function (xhr) {
+                    var response = xhr.responseJSON || {};
+                    appendChatMessage("assistant", "Vitabit Coach", response.error || "Assistant request failed.", []);
+                    $("#chat_status").text("Unavailable");
+                }
+            });
+        }
+
+        function renderList(selector, items) {
+            var target = $(selector);
+            target.empty();
+            if (!items || !items.length) {
+                target.html("<li>No strong signal detected.</li>");
+                return;
+            }
+            items.forEach(function (item) {
+                target.append("<li>" + safeHtml(item) + "</li>");
+            });
+        }
+
+        function renderMealAnalysis(data) {
+            $("#meal_summary").text(data.meal_summary || "No summary available.");
+            renderList("#meal_nutrients", data.estimated_nutrients);
+            renderList("#meal_gaps", data.likely_gaps);
+            renderList("#meal_suggestions", data.supplement_ideas);
+        }
+
+        function syncMealFile(sourceInput) {
+            var primaryInput = $("#meal_image")[0];
+            if (!sourceInput || !sourceInput.files || !sourceInput.files.length || !primaryInput) {
+                return false;
+            }
+
+            if (sourceInput !== primaryInput) {
+                var transfer = new DataTransfer();
+                transfer.items.add(sourceInput.files[0]);
+                primaryInput.files = transfer.files;
+            }
+            return true;
+        }
+
+        function analyzeMeal() {
+            var fileInput = $("#meal_image")[0];
+            if (!fileInput.files.length) {
+                $("#meal_status").text("Choose an image first.");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+            formData.append("notes", $("#meal_notes").val());
+            $("#meal_status").text("Analyzing image...");
+
+            $.ajax({
+                url: "/assistant/analyze-meal",
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    renderMealAnalysis(data);
+                    $("#meal_status").text("Analysis complete");
+                    $("#meal_camera_input").val("");
+                    if (authState.authenticated) {
+                        loadAccountData();
                     }
                 },
-                error: function () {
-                    alert("Error connecting to server.");
+                error: function (xhr) {
+                    var response = xhr.responseJSON || {};
+                    $("#meal_status").text(response.error || "Meal analysis failed.");
                 }
             });
         }
 
         $(function () {
+            renderSchedule();
+            loadAccountData();
+
             $("#budget_input").on("keydown", function (e) {
                 if (e.key === "Enter") {
                     search();
+                }
+            });
+
+            $("#chat_prompt").on("keydown", function (e) {
+                if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                    sendChat();
+                }
+            });
+
+            $("#meal_image, #meal_camera_input").on("change", function () {
+                if (syncMealFile(this)) {
+                    analyzeMeal();
                 }
             });
 
@@ -251,23 +1057,20 @@
                     $(this).toggleClass("open");
                 }
             });
+
+            $("#quick_add_form").on("submit", function (e) {
+                e.preventDefault();
+                var name = $("#quick_name").val().trim();
+                var time = $("#quick_time").val();
+                if (!name) {
+                    return;
+                }
+                addToSchedule(name, time || "08:00");
+                $("#quick_name").val("");
+            });
+
+            appendChatMessage("assistant", "Vitabit Coach", "Ask about supplement timing, meal gaps, or general routine planning for wellness tracking.", []);
         });
     </script>
-</head>
-<body>
-    <div class="container">
-        <header class="hero">
-            <h1>Vitabit🌿</h1>
-            <p>Your Smart Daily Nutrition Guide</p>
-        </header>
-
-        <div class="search-box">
-            <input id="budget_input" type="text" placeholder="Search vitamins (e.g. Vitamin C)">
-            <button onclick="search()">Search</button>
-        </div>
-
-        <ul id="result_list">
-            </ul>
-    </div>
 </body>
 </html>
