@@ -117,14 +117,20 @@ def get_response_text(response):
 
 
 def load_catalog(limit=None):
-    cursor = supplements_collection.find({}, {"_id": 0}).sort("name", 1)
-    if limit is not None:
-        cursor = cursor.limit(limit)
-    return list(cursor)
+    try:
+        cursor = supplements_collection.find({}, {"_id": 0}).sort("name", 1)
+        if limit is not None:
+            cursor = cursor.limit(limit)
+        return list(cursor)
+    except PyMongoError as exc:
+        print(f"MongoDB catalog load failed: {exc}")
+        return []
 
 
 def build_catalog_context(max_items=20):
     items = load_catalog(limit=max_items)
+    if not items:
+        return "- Catalog unavailable right now. Answer with general wellness guidance."
     return "\n".join(
         f"- {item.get('name')} [{item.get('category', 'Supplement')}]: {item.get('benefit', 'General wellness support')}"
         for item in items
