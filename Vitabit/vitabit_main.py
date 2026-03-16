@@ -67,6 +67,19 @@ NUTRIENT_TARGET_NAMES = {
 DEFAULT_TARGET_REFERENCES = {
 }
 
+CATALOG_IMAGE_MAP = {
+    "Vitamin C": "/static/images/vitamin-c.svg",
+    "Vitamin D3": "/static/images/vitamin-d3.svg",
+    "Magnesium": "/static/images/magnesium.svg",
+    "Vitamin B12": "/static/images/vitamin-b12.svg",
+    "Calcium": "/static/images/calcium.svg",
+    "Iron": "/static/images/iron.svg",
+    "Zinc": "/static/images/zinc.svg",
+    "Omega-3 Fish Oil": "/static/images/omega-3.svg",
+    "Probiotics": "/static/images/probiotics.svg",
+    "Multivitamin": "/static/images/multivitamin.svg",
+}
+
 
 def utcnow():
     return datetime.now(timezone.utc)
@@ -91,6 +104,10 @@ def serialize_document(document):
         serialized["profile_id"] = str(serialized["profile_id"])
     if "tracked_item_id" in serialized and isinstance(serialized["tracked_item_id"], ObjectId):
         serialized["tracked_item_id"] = str(serialized["tracked_item_id"])
+    if not serialized.get("image_url"):
+        mapped_image = CATALOG_IMAGE_MAP.get(serialized.get("name"))
+        if mapped_image:
+            serialized["image_url"] = mapped_image
     return serialized
 
 
