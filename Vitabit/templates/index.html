@@ -505,6 +505,45 @@
             cursor: pointer;
         }
 
+        .reminder-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 8px 0 18px;
+        }
+
+        .toast-stack {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            display: grid;
+            gap: 12px;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .toast {
+            width: min(340px, calc(100vw - 32px));
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            background: rgba(255, 252, 246, 0.96);
+            box-shadow: 0 18px 40px rgba(31, 42, 29, 0.14);
+            pointer-events: auto;
+        }
+
+        .toast strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.96rem;
+        }
+
+        .toast p {
+            margin: 0;
+            font-size: 0.94rem;
+        }
+
         .chat-feed { max-height: 440px; overflow-y: auto; padding-right: 4px; }
         .chat-card.user { background: rgba(30, 107, 82, 0.14); }
         .chat-meta {
@@ -718,6 +757,11 @@
                             </div>
                         </div>
 
+                        <div class="reminder-tools">
+                            <button type="button" class="ghost-button" id="enable_notifications">Enable Reminder Alerts</button>
+                            <span class="mini-pill" id="notification_state">Browser alerts off</span>
+                        </div>
+
                         <form class="planner-form" id="quick_add_form">
                             <input id="quick_name" type="text" placeholder="Quick add supplement or medication name">
                             <input id="quick_time" type="time" value="08:00">
@@ -777,9 +821,12 @@
             Vitabit estimates coverage from meal photos, tracked supplement or medication routines, and official intake references such as NIH Office of Dietary Supplements guidance. For medication changes, diagnosis, or condition-specific guidance, consult a licensed clinician or pharmacist.
         </footer>
     </main>
+    <div class="toast-stack" id="toast_stack" aria-live="polite"></div>
     <script>
         const SCHEDULE_KEY = "vitabit-schedule-v1";
+        const REMINDER_LOG_KEY = "vitabit-reminder-log-v1";
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
+        let reminderTimer = null;
 
         function fallbackImageDataUri(name) {
             var firstChar = (name || "V").charAt(0).toUpperCase();
@@ -801,6 +848,18 @@
 
         function setSchedule(items) {
             localStorage.setItem(SCHEDULE_KEY, JSON.stringify(items));
+        }
+
+        function getReminderLog() {
+            try {
+                return JSON.parse(localStorage.getItem(REMINDER_LOG_KEY) || "{}");
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function setReminderLog(value) {
+            localStorage.setItem(REMINDER_LOG_KEY, JSON.stringify(value));
         }
 
         function getServerCompletion(itemId) {
@@ -848,7 +907,6 @@
                 : getSchedule();
             items = items.sort(function (a, b) { return a.time.localeCompare(b.time); });
             var completed = items.filter(function (item) { return item.completed; }).length;
-            $("#schedule_count").text(items.length + " planned");
             $("#schedule_progress").text(items.length ? completed + " / " + items.length + " completed today" : "Start with one supplement reminder");
 
             if (!items.length) {
@@ -869,6 +927,113 @@
                     </li>
                 `);
             });
+        }
+
+        function updateNotificationState() {
+            if (!("Notification" in window)) {
+                $("#notification_state").text("Browser alerts unsupported");
+                $("#enable_notifications").prop("disabled", true);
+                return;
+            }
+
+            var permission = Notification.permission;
+            var label = "Browser alerts off";
+            if (permission === "granted") {
+                label = "Browser alerts on";
+            } else if (permission === "denied") {
+                label = "Browser alerts blocked";
+            }
+            $("#notification_state").text(label);
+        }
+
+        function showReminderToast(title, message) {
+            var toast = $(`
+                <div class="toast">
+                    <strong>${safeHtml(title)}</strong>
+                    <p>${safeHtml(message)}</p>
+                </div>
+            `);
+            $("#toast_stack").append(toast);
+            setTimeout(function () {
+                toast.fadeOut(220, function () {
+                    toast.remove();
+                });
+            }, 5000);
+        }
+
+        function requestReminderPermission() {
+            if (!("Notification" in window)) {
+                updateNotificationState();
+                return;
+            }
+
+            Notification.requestPermission().then(function () {
+                updateNotificationState();
+                if (Notification.permission === "granted") {
+                    showReminderToast("Reminder alerts enabled", "Vitabit can now show browser reminders while this page is open.");
+                }
+            });
+        }
+
+        function getReminderItems() {
+            return authState.authenticated
+                ? (authState.tracked_items || []).map(function (item) {
+                    return {
+                        id: item._id,
+                        name: item.name,
+                        time: item.schedule_time || "08:00",
+                        completed: getServerCompletion(item._id),
+                        item_type: item.item_type || "supplement"
+                    };
+                })
+                : getSchedule();
+        }
+
+        function fireReminder(item) {
+            var title = "Vitabit reminder";
+            var body = item.name + " at " + item.time;
+            showReminderToast(title, body);
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, tag: "vitabit-" + item.id });
+            }
+
+            if ("vibrate" in navigator) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+
+        function checkReminders() {
+            var now = new Date();
+            var currentMinute = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+            var today = now.toISOString().slice(0, 10);
+            var log = getReminderLog();
+
+            getReminderItems().forEach(function (item) {
+                if (!item.time || item.completed) {
+                    return;
+                }
+                var key = today + ":" + item.id + ":" + item.time;
+                if (item.time === currentMinute && !log[key]) {
+                    log[key] = true;
+                    fireReminder(item);
+                }
+            });
+
+            Object.keys(log).forEach(function (key) {
+                if (key.indexOf(today + ":") !== 0) {
+                    delete log[key];
+                }
+            });
+            setReminderLog(log);
+        }
+
+        function startReminderLoop() {
+            if (reminderTimer) {
+                clearInterval(reminderTimer);
+            }
+            checkReminders();
+            reminderTimer = setInterval(checkReminders, 30000);
         }
 
         function renderMealHistory() {
@@ -1200,6 +1365,8 @@
         $(function () {
             renderSchedule();
             loadAccountData();
+            updateNotificationState();
+            startReminderLoop();
 
             $("#budget_input").on("keydown", function (e) {
                 if (e.key === "Enter") {
@@ -1239,6 +1406,10 @@
                 }
                 addToSchedule(name, time || "08:00");
                 $("#quick_name").val("");
+            });
+
+            $("#enable_notifications").on("click", function () {
+                requestReminderPermission();
             });
 
         });
