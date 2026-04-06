@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Melatonin icon">
+  <rect width="240" height="240" rx="44" fill="#eef2ff"/>
+  <circle cx="118" cy="110" r="46" fill="#5865c8"/>
+  <circle cx="136" cy="96" r="42" fill="#eef2ff"/>
+  <circle cx="101" cy="107" r="4" fill="#5865c8"/>
+  <circle cx="116" cy="117" r="4" fill="#5865c8"/>
+  <path d="M96 129c6 6 14 9 23 9" stroke="#5865c8" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="157" cy="80" r="6" fill="#8d97e8"/>
+  <circle cx="170" cy="99" r="4" fill="#8d97e8"/>
+  <circle cx="75" cy="84" r="5" fill="#8d97e8"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="700" fill="#4651a5">Sleep</text>
+</svg>

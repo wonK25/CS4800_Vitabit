@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Creatine icon">
+  <rect width="240" height="240" rx="44" fill="#eef5f0"/>
+  <path d="M70 108h20v24H70c-7 0-12-5-12-12s5-12 12-12zm80 0h20c7 0 12 5 12 12s-5 12-12 12h-20v-24z" fill="#3d7a5c"/>
+  <rect x="90" y="96" width="60" height="48" rx="18" fill="#5fa37d"/>
+  <path d="M112 110v20M102 120h20" stroke="#eef5f0" stroke-width="8" stroke-linecap="round"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="700" fill="#315d47">Creatine</text>
+</svg>

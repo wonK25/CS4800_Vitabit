@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Electrolyte Powder icon">
+  <rect width="240" height="240" rx="44" fill="#e7f6fb"/>
+  <path d="M82 66h76l12 100c2 12-8 22-20 22H90c-12 0-22-10-20-22L82 66z" fill="#2d91b3"/>
+  <path d="M100 76h40" stroke="#b8ebf7" stroke-width="8" stroke-linecap="round"/>
+  <path d="M128 94l-18 34h16l-14 28 32-40h-17l17-22z" fill="#e7f6fb"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="17" font-weight="700" fill="#226f88">Hydrate</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Collagen icon">
+  <rect width="240" height="240" rx="44" fill="#fdf0ea"/>
+  <path d="M86 74h68v26c0 12-10 22-22 22h-24c-12 0-22-10-22-22V74z" fill="#d88f79"/>
+  <path d="M98 122h44c16 0 29 13 29 29v11c0 14-12 26-26 26H95c-14 0-26-12-26-26v-11c0-16 13-29 29-29z" fill="#eab29f"/>
+  <circle cx="102" cy="154" r="6" fill="#fff7f2"/>
+  <circle cx="120" cy="144" r="6" fill="#fff7f2"/>
+  <circle cx="138" cy="154" r="6" fill="#fff7f2"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="20" font-weight="700" fill="#a76856">Collagen</text>
+</svg>

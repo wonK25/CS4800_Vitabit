@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Vitamin A icon">
+  <rect width="240" height="240" rx="44" fill="#fff1e3"/>
+  <path d="M120 58c18 0 32 15 32 33v46c0 18-14 33-32 33s-32-15-32-33V91c0-18 14-33 32-33z" fill="#f28c28"/>
+  <path d="M120 58c-9 0-18 4-24 10 4 8 13 14 24 14s20-6 24-14c-6-6-15-10-24-10z" fill="#6a994e"/>
+  <path d="M96 125c8-9 16-13 24-13s16 4 24 13c-8 10-16 14-24 14s-16-4-24-14z" fill="#fff7ef"/>
+  <circle cx="120" cy="125" r="8" fill="#f28c28"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="700" fill="#a35c17">Vit A</text>
+</svg>

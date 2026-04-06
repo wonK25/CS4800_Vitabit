@@ -23,7 +23,8 @@ data = [
         "how_to_take": "Take once daily with a meal that contains fat",
         "male_daily_intake": "900 mcg RAE/day",
         "female_daily_intake": "700 mcg RAE/day",
-        "intake_note": "Avoid high-dose retinol during pregnancy unless prescribed. UL: 3000 mcg RAE/day."
+        "intake_note": "Avoid high-dose retinol during pregnancy unless prescribed. UL: 3000 mcg RAE/day.",
+        "image_url": "/static/images/vitamin-a.svg"
     },
     {
         "name": "Vitamin B1",
@@ -136,7 +137,8 @@ data = [
         "how_to_take": "Take once daily with a meal containing fat",
         "male_daily_intake": "15 mg/day",
         "female_daily_intake": "15 mg/day",
-        "intake_note": "High doses may increase bleeding risk, especially with blood thinners."
+        "intake_note": "High doses may increase bleeding risk, especially with blood thinners.",
+        "image_url": "/static/images/vitamin-e.svg"
     },
     {
         "name": "Vitamin K",
@@ -146,7 +148,8 @@ data = [
         "how_to_take": "Take once daily with food",
         "male_daily_intake": "120 mcg/day",
         "female_daily_intake": "90 mcg/day",
-        "intake_note": "If you take warfarin or another anticoagulant, keep intake consistent and ask your clinician."
+        "intake_note": "If you take warfarin or another anticoagulant, keep intake consistent and ask your clinician.",
+        "image_url": "/static/images/vitamin-k.svg"
     },
     {
         "name": "Choline",
@@ -210,7 +213,8 @@ data = [
         "how_to_take": "Use supplements only with caution; food sources are preferred",
         "male_daily_intake": "3400 mg/day",
         "female_daily_intake": "2600 mg/day",
-        "intake_note": "Potassium supplements can be risky in kidney disease or with certain blood pressure medicines."
+        "intake_note": "Potassium supplements can be risky in kidney disease or with certain blood pressure medicines.",
+        "image_url": "/static/images/potassium.svg"
     },
     {
         "name": "Selenium",
@@ -220,7 +224,8 @@ data = [
         "how_to_take": "Take once daily with food",
         "male_daily_intake": "55 mcg/day",
         "female_daily_intake": "55 mcg/day",
-        "intake_note": "Too much selenium can cause brittle nails, hair loss, and stomach upset. UL: 400 mcg/day."
+        "intake_note": "Too much selenium can cause brittle nails, hair loss, and stomach upset. UL: 400 mcg/day.",
+        "image_url": "/static/images/selenium.svg"
     },
     {
         "name": "Iodine",
@@ -342,7 +347,8 @@ data = [
         "how_to_take": "Mix into coffee, water, or smoothies once daily",
         "male_daily_intake": "No established RDA; common use is 5-20 g/day",
         "female_daily_intake": "No established RDA; common use is 5-20 g/day",
-        "intake_note": "This is a protein supplement, not a complete protein source. Product source may be bovine, marine, or chicken."
+        "intake_note": "This is a protein supplement, not a complete protein source. Product source may be bovine, marine, or chicken.",
+        "image_url": "/static/images/collagen.svg"
     },
     {
         "name": "Creatine Monohydrate",
@@ -352,7 +358,8 @@ data = [
         "how_to_take": "Take daily, with or without workouts; consistency matters more than timing",
         "male_daily_intake": "No established RDA; common maintenance dose is 3-5 g/day",
         "female_daily_intake": "No established RDA; common maintenance dose is 3-5 g/day",
-        "intake_note": "Generally taken with adequate hydration. Weight gain from increased water storage can occur."
+        "intake_note": "Generally taken with adequate hydration. Weight gain from increased water storage can occur.",
+        "image_url": "/static/images/creatine.svg"
     },
     {
         "name": "Melatonin",
@@ -362,7 +369,8 @@ data = [
         "how_to_take": "Take 30 to 60 minutes before bedtime",
         "male_daily_intake": "No established RDA; many products use 0.3-5 mg",
         "female_daily_intake": "No established RDA; many products use 0.3-5 mg",
-        "intake_note": "Lower doses are often enough. May cause morning grogginess in some users."
+        "intake_note": "Lower doses are often enough. May cause morning grogginess in some users.",
+        "image_url": "/static/images/melatonin.svg"
     },
     {
         "name": "Turmeric Curcumin",
@@ -422,7 +430,8 @@ data = [
         "how_to_take": "Mix with water or milk after workouts or as needed to meet protein goals",
         "male_daily_intake": "No established RDA for supplements; total daily protein needs depend on body size and activity",
         "female_daily_intake": "No established RDA for supplements; total daily protein needs depend on body size and activity",
-        "intake_note": "This helps fill protein gaps but should not replace a balanced diet."
+        "intake_note": "This helps fill protein gaps but should not replace a balanced diet.",
+        "image_url": "/static/images/protein-powder.svg"
     },
     {
         "name": "Multivitamin",
@@ -483,7 +492,8 @@ data = [
         "how_to_take": "Mix with water according to the label, especially around exercise or heavy sweating",
         "male_daily_intake": "No established RDA for supplement powders; use based on sweat losses and product label",
         "female_daily_intake": "No established RDA for supplement powders; use based on sweat losses and product label",
-        "intake_note": "Sugar, sodium, and potassium content vary widely. Some products are sports drinks, others are low-calorie mixes."
+        "intake_note": "Sugar, sodium, and potassium content vary widely. Some products are sports drinks, others are low-calorie mixes.",
+        "image_url": "/static/images/electrolyte-powder.svg"
     },
     {
         "name": "Elderberry",

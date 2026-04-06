@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Vitamin K icon">
+  <rect width="240" height="240" rx="44" fill="#eaf6e8"/>
+  <path d="M120 60 176 88v39c0 34-24 59-56 71-32-12-56-37-56-71V88l56-28z" fill="#4d8c57"/>
+  <path d="M96 98v46M96 122l36-24M108 121l30 23" stroke="#f7fbf5" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="120" y="198" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="700" fill="#35603d">Vit K</text>
+</svg>

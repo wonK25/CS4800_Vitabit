@@ -7,40 +7,70 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --surface: rgba(255, 252, 246, 0.88);
+            --surface: rgba(255, 252, 246, 0.92);
             --ink: #1f2a1d;
-            --muted: #5b6556;
-            --line: rgba(31, 42, 29, 0.12);
+            --muted: #6b7264;
+            --line: rgba(31, 42, 29, 0.10);
             --accent: #1e6b52;
             --accent-2: #c4602f;
             --accent-soft: #d7eadf;
             --danger-soft: #f8dfd5;
-            --shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
-            --radius-xl: 30px;
+            --shadow: 0 20px 60px rgba(57, 43, 18, 0.10);
+            --shadow-sm: 0 4px 20px rgba(57, 43, 18, 0.08);
+            --radius-xl: 28px;
+            --pill-green: #3ecf8e;
+            --pill-pink: #ff7eb3;
+            --pill-yellow: #ffd166;
+            --pill-blue: #74b9ff;
+            --pill-orange: #ff9f7a;
+            --pill-purple: #c4a0f5;
         }
 
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Instrument Sans", sans-serif;
+            font-family: "Plus Jakarta Sans", sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at top left, rgba(212, 168, 106, 0.28), transparent 28%),
-                radial-gradient(circle at top right, rgba(30, 107, 82, 0.14), transparent 28%),
-                linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
+                radial-gradient(ellipse 55% 40% at 5% 0%, rgba(212, 168, 106, 0.22), transparent 50%),
+                radial-gradient(ellipse 40% 35% at 95% 5%, rgba(62, 207, 142, 0.13), transparent 50%),
+                radial-gradient(ellipse 30% 30% at 80% 95%, rgba(255, 126, 179, 0.09), transparent 50%),
+                linear-gradient(180deg, #faf4eb 0%, #f2e8d8 100%);
             min-height: 100vh;
         }
 
-        h1, h2, h3, h4 {
-            font-family: "Space Grotesk", sans-serif;
-            margin: 0;
-        }
-
+        h1, h2, h3, h4 { font-family: "Nunito", sans-serif; margin: 0; }
         p { margin: 0; color: var(--muted); line-height: 1.6; }
         button, input, textarea { font: inherit; }
+
+        /* ── floating pill keyframes ── */
+        @keyframes floatA {
+            0%, 100% { transform: rotate(-22deg) translateY(0px); }
+            50%       { transform: rotate(-22deg) translateY(-14px); }
+        }
+        @keyframes floatB {
+            0%, 100% { transform: rotate(14deg) translateY(0px); }
+            50%       { transform: rotate(14deg) translateY(-18px); }
+        }
+        @keyframes floatC {
+            0%, 100% { transform: rotate(-8deg) translateY(0px); }
+            50%       { transform: rotate(-8deg) translateY(-10px); }
+        }
+        @keyframes floatD {
+            0%, 100% { transform: rotate(30deg) translateY(0px); }
+            50%       { transform: rotate(30deg) translateY(-16px); }
+        }
+        @keyframes floatE {
+            0%, 100% { transform: rotate(-40deg) translateY(0px); }
+            50%       { transform: rotate(-40deg) translateY(-12px); }
+        }
+        @keyframes floatF {
+            0%, 100% { transform: rotate(20deg) translateY(0px); }
+            50%       { transform: rotate(20deg) translateY(-20px); }
+        }
 
         .shell {
             width: min(1560px, calc(100% - 24px));
@@ -49,62 +79,52 @@
 
         .hero, .card, .vitamin-card, .chat-card {
             background: var(--surface);
-            border: 1px solid rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.65);
             box-shadow: var(--shadow);
             border-radius: var(--radius-xl);
         }
 
+        .vitamin-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .vitamin-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(57,43,18,0.13); }
+
         .hero {
             position: relative;
             overflow: hidden;
-            padding: 32px 32px 40px;
+            padding: 32px 36px 52px;
             display: grid;
             gap: 24px;
-            background: linear-gradient(145deg, rgba(255, 250, 242, 0.78), rgba(239, 250, 244, 0.76));
+            background: linear-gradient(145deg, rgba(255, 251, 243, 0.88), rgba(237, 252, 246, 0.82));
             min-height: 680px;
         }
 
-        .hero > * {
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-video-wrap {
+        /* ── floating pill decorations ── */
+        .hero-pills {
             position: absolute;
             inset: 0;
-            z-index: 0;
             pointer-events: none;
+            z-index: 0;
         }
 
-        .hero-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center 42%;
-            opacity: 0.34;
-            filter: saturate(0.96) contrast(0.98) brightness(1.02);
-            transform: scale(1.03);
-        }
-
-        .hero-video-wash {
+        .hp {
             position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 50% 44%, rgba(255, 252, 246, 0.18), transparent 36%),
-                linear-gradient(180deg, rgba(255, 249, 241, 0.52) 0%, rgba(255, 251, 245, 0.28) 32%, rgba(244, 250, 246, 0.3) 100%);
-        }
-
-        .hero-video-mask {
-            position: absolute;
-            left: 50%;
-            bottom: -18px;
-            transform: translateX(-50%);
-            width: min(560px, 72%);
-            height: 110px;
             border-radius: 999px;
-            background: rgba(248, 243, 235, 0.92);
-            filter: blur(14px);
+            opacity: 0.55;
         }
+
+        /* pill shapes: wide capsule */
+        .hp-1 { width: 100px; height: 42px; top: 12%; left: 7%;  background: linear-gradient(135deg, var(--pill-pink), var(--pill-purple)); animation: floatA 4.2s ease-in-out infinite; }
+        .hp-2 { width: 72px;  height: 32px; top: 18%; right: 10%; background: linear-gradient(135deg, var(--pill-yellow), var(--pill-orange)); animation: floatB 5.1s ease-in-out infinite; }
+        .hp-3 { width: 86px;  height: 36px; top: 62%; left: 5%;  background: linear-gradient(135deg, var(--pill-blue), var(--pill-green)); animation: floatC 4.7s ease-in-out infinite; }
+        .hp-4 { width: 60px;  height: 28px; top: 72%; right: 8%; background: linear-gradient(135deg, var(--pill-green), var(--pill-yellow)); animation: floatD 3.9s ease-in-out infinite; }
+        .hp-5 { width: 50px;  height: 22px; top: 38%; left: 3%;  background: linear-gradient(135deg, var(--pill-orange), var(--pill-pink)); animation: floatE 5.5s ease-in-out infinite; }
+        .hp-6 { width: 78px;  height: 34px; top: 48%; right: 5%; background: linear-gradient(135deg, var(--pill-purple), var(--pill-blue)); animation: floatF 4.4s ease-in-out infinite; }
+        /* small round pills */
+        .hp-7  { width: 28px; height: 28px; top: 8%;  right: 25%; background: var(--pill-green);  animation: floatB 3.8s ease-in-out infinite; opacity: 0.45; }
+        .hp-8  { width: 20px; height: 20px; top: 80%; left: 22%;  background: var(--pill-pink);   animation: floatA 4.9s ease-in-out infinite; opacity: 0.4; }
+        .hp-9  { width: 24px; height: 24px; top: 55%; right: 22%; background: var(--pill-yellow); animation: floatC 5.2s ease-in-out infinite; opacity: 0.45; }
+        .hp-10 { width: 16px; height: 16px; top: 25%; left: 18%;  background: var(--pill-blue);   animation: floatD 4.1s ease-in-out infinite; opacity: 0.5; }
+
+        .hero > * { position: relative; z-index: 2; }
 
         .topbar, .section-title {
             display: flex;
@@ -227,19 +247,13 @@
         }
 
         .brand-pill {
-            width: 24px;
-            height: 16px;
+            width: 26px;
+            height: 17px;
             border-radius: 999px;
-            position: relative;
             display: inline-block;
             vertical-align: middle;
-            background:
-                radial-gradient(circle at 26% 50%, #ffd86f 0 22%, transparent 24%),
-                radial-gradient(circle at 50% 50%, #8ed8ff 0 22%, transparent 24%),
-                radial-gradient(circle at 74% 50%, #ff9fcd 0 22%, transparent 24%),
-                linear-gradient(135deg, rgba(255,255,255,0.96), rgba(244, 251, 246, 0.88));
-            border: 1px solid rgba(30, 107, 82, 0.18);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
+            background: linear-gradient(90deg, var(--pill-green), var(--pill-blue), var(--pill-pink));
+            box-shadow: 0 2px 8px rgba(62, 207, 142, 0.35);
         }
 
         .hero-grid, .layout {
@@ -247,43 +261,193 @@
             gap: 24px;
         }
 
-        .hero-grid { grid-template-columns: 1fr; }
-        .layout { grid-template-columns: 1fr; margin-top: 24px; }
+        .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(420px, 0.92fr); align-items: stretch; }
+        .layout { grid-template-columns: 1fr; margin-top: 24px; align-items: start; }
         .column { display: grid; gap: 24px; align-content: start; }
         .card { padding: 28px; }
 
         .hero-copy h1 {
-            font-size: clamp(2rem, 4.2vw, 3.6rem);
-            line-height: 1.06;
-            letter-spacing: -0.06em;
-            margin: 0 auto 24px;
-            max-width: 12ch;
-            text-align: center;
-            color: #e9a32e;
+            font-size: clamp(2.5rem, 4.8vw, 4.4rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin: 0 0 20px;
+            max-width: 11ch;
+            text-align: left;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1e6b52 0%, #3d9eff 56%, #ff4d9e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-copy {
             display: grid;
             justify-items: center;
-            text-align: center;
+            text-align: left;
             align-content: center;
-            min-height: 500px;
+            min-height: 540px;
+            width: 100%;
         }
 
-        .hero-copy p { max-width: 52ch; font-size: 1.02rem; margin: 0 auto; }
-        .stats, .pill-row, .search-actions, .cta-row, .action-inline { display: flex; flex-wrap: wrap; gap: 10px; }
-        .cta-row { margin-top: 42px; justify-content: center; gap: 16px; }
+        .hero-copy > * {
+            width: min(100%, 620px);
+        }
+
+        .hero-copy p { max-width: 52ch; font-size: 1.02rem; margin: 0; }
+        .stats, .pill-row, .search-actions, .cta-row, .action-inline, .hero-links, .hero-micro, .quick-chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        .cta-row { margin-top: 24px; gap: 12px; }
         .hero-utility {
             display: grid;
-            justify-items: center;
+            justify-items: start;
             gap: 14px;
             margin-top: 0;
-            margin-bottom: 44px;
+            margin-bottom: 28px;
         }
 
         .hero-utility p {
             font-size: 0.96rem;
             max-width: 72ch;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.72);
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .hero-micro {
+            margin-top: 14px;
+        }
+
+        .hero-micro span {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.72);
+            border: 1px solid rgba(31, 42, 29, 0.08);
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .hero-support {
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .hero-stage {
+            display: grid;
+            gap: 16px;
+            align-content: stretch;
+            min-height: 540px;
+        }
+
+        .hero-feature-card,
+        .hero-side-card {
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.68);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .hero-feature-card {
+            padding: 22px;
+            display: grid;
+            gap: 16px;
+            min-height: 0;
+            background: linear-gradient(160deg, rgba(255,250,245,0.9), rgba(237,250,244,0.84));
+        }
+
+        .hero-side-card {
+            padding: 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .hero-tool-trigger {
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+        }
+
+        .hero-tool-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(57, 43, 18, 0.10);
+            border-color: rgba(30, 107, 82, 0.18);
+        }
+
+        .hero-side-stack {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .hero-upload-prompt {
+            display: grid;
+            gap: 10px;
+            text-align: left;
+            min-height: 0;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1.5px dashed rgba(30, 107, 82, 0.2);
+            background:
+                radial-gradient(circle at top right, rgba(255, 126, 179, 0.14), transparent 34%),
+                radial-gradient(circle at bottom left, rgba(116, 185, 255, 0.14), transparent 36%),
+                rgba(255,255,255,0.74);
+        }
+
+        .hero-upload-prompt strong {
+            display: block;
+            font-family: "Nunito", sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+
+        .hero-upload-prompt p {
+            max-width: 34ch;
+            font-size: 0.95rem;
+        }
+
+        .hero-start-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .hero-start-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(31, 42, 29, 0.08);
+        }
+
+        .hero-start-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pill-green), var(--pill-blue));
+        }
+
+        .hero-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .mini-caption {
+            font-size: 0.88rem;
+            color: var(--muted);
         }
 
         .chip, .mini-pill, .category-tag {
@@ -329,21 +493,38 @@
         .button, .ghost-button, .search-box button, .chat-input button, .planner-form button, .upload-form button, .action-inline button {
             border: none;
             border-radius: 999px;
-            padding: 13px 18px;
+            padding: 13px 22px;
             cursor: pointer;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
 
         .button, .search-box button, .chat-input button, .planner-form button, .upload-form button {
-            background: var(--accent);
+            background: linear-gradient(135deg, #1e6b52 0%, #2d9e74 100%);
             color: white;
-            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(30, 107, 82, 0.28);
+        }
+
+        .button:hover, .search-box button:hover, .chat-input button:hover,
+        .planner-form button:hover, .upload-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30, 107, 82, 0.38);
         }
 
         .ghost-button {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.82);
             color: var(--ink);
-            border: 1px solid var(--line);
+            border: 1.5px solid rgba(31, 42, 29, 0.12);
             text-decoration: none;
+            backdrop-filter: blur(6px);
+        }
+
+        .ghost-button:hover {
+            background: rgba(255, 255, 255, 0.96);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
 
         .cta-link {
@@ -359,13 +540,35 @@
             font-weight: 600;
         }
 
+        .pill-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            letter-spacing: 0.01em;
+        }
+
         .search-box {
             display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.76);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 10px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: var(--shadow-sm);
         }
 
         .split-grid {
@@ -373,6 +576,106 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 24px;
             align-items: stretch;
+        }
+
+        .subtle-button {
+            background: rgba(30, 107, 82, 0.08) !important;
+            color: var(--accent) !important;
+            box-shadow: none !important;
+        }
+
+        .subtle-button:hover {
+            background: rgba(30, 107, 82, 0.12) !important;
+        }
+
+        .meal-primary {
+            background: linear-gradient(180deg, rgba(255,250,244,0.92), rgba(241,249,244,0.86));
+        }
+
+        .meal-upload-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .meal-dropzone {
+            display: grid;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1.5px dashed rgba(30, 107, 82, 0.18);
+            background:
+                radial-gradient(circle at top right, rgba(255, 126, 179, 0.12), transparent 28%),
+                radial-gradient(circle at bottom left, rgba(116, 185, 255, 0.12), transparent 30%),
+                rgba(255,255,255,0.74);
+        }
+
+        .meal-dropzone-copy strong {
+            display: block;
+            margin-bottom: 6px;
+            font-family: "Nunito", sans-serif;
+            font-size: 1.05rem;
+        }
+
+        .tool-card {
+            padding: 22px;
+        }
+
+        .workspace {
+            display: grid;
+            gap: 24px;
+        }
+
+        .quick-chip-row {
+            margin-top: 8px;
+        }
+
+        .quick-chip {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            background: rgba(30, 107, 82, 0.08);
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .quick-chip:hover {
+            background: rgba(30, 107, 82, 0.14);
+        }
+
+        .catalog-time-input {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.84);
+            border-radius: 999px;
+            padding: 10px 12px;
+            color: var(--ink);
+        }
+
+        .detail-section {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.24s ease, transform 0.24s ease;
+        }
+
+        .detail-section.is-hidden {
+            display: none;
+        }
+
+        .detail-section.is-entering {
+            animation: revealSection 240ms ease;
+        }
+
+        @keyframes revealSection {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .search-box input, .planner-form input, .chat-input textarea, .upload-form textarea, .upload-form input[type="file"] {
@@ -659,6 +962,7 @@
         @media (max-width: 980px) {
             .hero-grid, .layout { grid-template-columns: 1fr; }
             .split-grid { grid-template-columns: 1fr; }
+            .hero-side-stack, .meal-upload-grid { grid-template-columns: 1fr; }
             .analysis-grid { grid-template-columns: 1fr; }
         }
 
@@ -672,7 +976,7 @@
             }
             .search-box button { width: 100%; }
             .brand { max-width: none; }
-            .hero-copy { min-height: auto; }
+            .hero-copy, .hero-stage { min-height: auto; }
             .hero-copy h1 { max-width: 10ch; }
         }
     </style>
@@ -680,12 +984,17 @@
 <body>
     <main class="shell">
         <section class="hero" id="hero-top">
-            <div class="hero-video-wrap" aria-hidden="true">
-                <video class="hero-video" autoplay muted loop playsinline>
-                    <source src="/static/videos/vitabit-hero.mp4" type="video/mp4">
-                </video>
-                <div class="hero-video-wash"></div>
-                <div class="hero-video-mask"></div>
+            <div class="hero-pills" aria-hidden="true">
+                <div class="hp hp-1"></div>
+                <div class="hp hp-2"></div>
+                <div class="hp hp-3"></div>
+                <div class="hp hp-4"></div>
+                <div class="hp hp-5"></div>
+                <div class="hp hp-6"></div>
+                <div class="hp hp-7"></div>
+                <div class="hp hp-8"></div>
+                <div class="hp hp-9"></div>
+                <div class="hp hp-10"></div>
             </div>
             <div class="topbar">
                 <a class="brand brand-link" href="/#hero-top">
@@ -699,100 +1008,126 @@
             <div class="hero-grid">
                 <div class="hero-copy">
                     <div class="hero-utility">
-                        <p class="brand-copy">Support household profiles, timed routines, AI coaching, and meal-based wellness estimates.</p>
+                        <span class="hero-kicker">Keep daily vitamins and prescriptions from slipping through the cracks.</span>
                     </div>
-                    <h1>Track daily wellness in one place.</h1>
-                    <p>Track supplements, meals, medications, and routines in one place.</p>
+                    <h1>Build a routine you will actually remember.</h1>
                     <div class="cta-row">
-                        <a class="button cta-link" href="#coach-section">AI Vitabit Coach</a>
-                        <a class="ghost-button cta-link" href="#tracking-section">Tracking</a>
-                        <a class="ghost-button cta-link" href="#meal-section">Meal Photo Estimate</a>
+                        <button type="button" class="button cta-link" onclick="openDetailSection('tracking-section')">Build Today’s Routine</button>
+                        <button type="button" class="ghost-button cta-link" onclick="openDetailSection('meal-section')">Use Meal Analysis</button>
+                    </div>
+                    <div class="hero-micro" aria-label="Tracked supplements">
+                        <span>Reminder-first</span>
+                        <span>Meals for support</span>
+                        <span>Coach on demand</span>
+                    </div>
+                    <p class="hero-support">Up to 4 profiles for you, kids, or pets.</p>
+                </div>
+                <div class="hero-stage">
+                    <div class="hero-feature-card">
+                        <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today’s setup</h2></div>
+                        <div class="hero-upload-prompt">
+                            <div>
+                                <strong>Set the vitamins and meds you never want to miss</strong>
+                                <p>Start with your household routine first.</p>
+                            </div>
+                            <div class="hero-start-list">
+                                <div class="hero-start-item">
+                                    <span class="hero-start-dot" aria-hidden="true"></span>
+                                    <span>Up to 4 profiles in one home</span>
+                                </div>
+                                <div class="hero-start-item">
+                                    <span class="hero-start-dot" aria-hidden="true"></span>
+                                    <span>For adults, kids, or pets</span>
+                                </div>
+                                <div class="hero-start-item">
+                                    <span class="hero-start-dot" aria-hidden="true"></span>
+                                    <span>Meal and coach only when needed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cta-row">
+                            <button type="button" class="button cta-link" onclick="openDetailSection('tracking-section')">Open Routine</button>
+                            <button type="button" class="ghost-button cta-link" onclick="openDetailSection('meal-section')">Open Meal Analysis</button>
+                        </div>
+                        <div class="hero-links">
+                            <a href="#" onclick="openDetailSection('coach-section'); return false;">Need timing help?</a>
+                            <a href="#" onclick="openDetailSection('search-section'); return false;">Looking for a supplement instead?</a>
+                        </div>
+                    </div>
+                    <div class="hero-side-stack">
+                        <button type="button" class="hero-side-card hero-tool-trigger" onclick="openDetailSection('meal-section')">
+                            <div class="section-kicker"><span class="section-icon icon-meal" aria-hidden="true"></span><h2>Meal</h2></div>
+                            <p class="mini-caption">Check what your plate already covered before adding more.</p>
+                        </button>
+                        <button type="button" class="hero-side-card hero-tool-trigger" onclick="openDetailSection('coach-section')">
+                            <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Coach</h2></div>
+                            <p class="mini-caption">Ask only when you need timing, stacking, or gap support.</p>
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="layout">
-            <div class="column">
-                <section class="card" id="search-section">
+            <div class="workspace">
+                <section class="card tool-card detail-section" id="tracking-section">
                     <div class="section-title">
                         <div>
-                            <div class="section-kicker"><span class="section-icon icon-catalog" aria-hidden="true"></span><h2>Wellness Catalog</h2></div>
-                            <p>Search vitamins, minerals, probiotics, fish oil, and medication-aware wellness items.</p>
+                            <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today's Routine</h2></div>
+                            <p id="schedule_progress">Add your first reminder.</p>
                         </div>
                     </div>
-                    <div class="search-box">
-                        <input id="budget_input" type="text" placeholder="Search magnesium, probiotic, multivitamin, fish oil, prenatal...">
-                        <button onclick="search()">Search</button>
+
+                    <div class="reminder-tools">
+                        <button type="button" class="ghost-button" id="enable_notifications">Enable Reminder Alerts</button>
+                        <span class="mini-pill" id="notification_state">Browser alerts off</span>
                     </div>
-                    <div id="search_status" class="status-text">Search by nutrient, benefit, or product type.</div>
-                    <ul id="result_list"></ul>
+
+                    <form class="planner-form" id="quick_add_form">
+                        <input id="quick_name" type="text" placeholder="Add vitamin or medication">
+                        <input id="quick_time" type="time" value="08:00">
+                        <button type="submit" class="subtle-button">Add Reminder</button>
+                    </form>
+
+                    <div class="quick-chip-row" aria-label="Quick routine ideas">
+                        <button type="button" class="quick-chip" onclick="addToSchedule('Morning vitamins', '08:00')">Morning stack</button>
+                        <button type="button" class="quick-chip" onclick="addToSchedule('After lunch meds', '13:00')">After lunch</button>
+                        <button type="button" class="quick-chip" onclick="addToSchedule('Evening supplements', '20:00')">Before bed</button>
+                        <button type="button" class="quick-chip" onclick="addToSchedule('Prescription refill check', '09:00')">Prescription</button>
+                    </div>
+
+                    <ul id="schedule_list"></ul>
                 </section>
 
-                <div class="split-grid">
-                    <section class="card" id="coach-section">
-                        <div class="section-title">
-                            <div>
-                                <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>AI Vitabit Coach</h2></div>
-                                <p>Ask about timing, stacking, nutrition gaps, or general supplement and medication routine support.</p>
-                            </div>
-                        </div>
-
-                        <div class="chat-feed">
-                            <ul id="chat_messages"></ul>
-                        </div>
-
-                        <div class="chat-input">
-                            <textarea id="chat_prompt" placeholder="Ask something like: I take magnesium at night and vitamin D in the morning. What should I watch for if I also take medication and rarely eat fish?"></textarea>
-                            <button type="button" onclick="sendChat()">Send to Vitabit Coach</button>
-                            <div id="chat_status" class="footnote">Ready. For treatment decisions or medication changes, consult a clinician.</div>
-                        </div>
-                    </section>
-
-                    <section class="card" id="tracking-section">
-                        <div class="section-title">
-                            <div>
-                                <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today's Routine</h2></div>
-                                <p id="schedule_progress">Start with one supplement or medication reminder.</p>
-                            </div>
-                        </div>
-
-                        <div class="reminder-tools">
-                            <button type="button" class="ghost-button" id="enable_notifications">Enable Reminder Alerts</button>
-                            <span class="mini-pill" id="notification_state">Browser alerts off</span>
-                        </div>
-
-                        <form class="planner-form" id="quick_add_form">
-                            <input id="quick_name" type="text" placeholder="Quick add supplement or medication name">
-                            <input id="quick_time" type="time" value="08:00">
-                            <button type="submit">Add Reminder</button>
-                        </form>
-
-                        <ul id="schedule_list"></ul>
-                    </section>
-                </div>
-
-                <section class="card" id="meal-section">
+                <section class="card meal-primary detail-section is-hidden" id="meal-section">
                     <div class="section-title">
                         <div>
                             <div class="section-kicker"><span class="section-icon icon-meal" aria-hidden="true"></span><h2>Meal Photo Analysis</h2></div>
-                            <p>Upload a food photo to estimate what nutrients look covered today and what might still need support.</p>
+                            <p>Read what a meal likely covered before you add anything else.</p>
                         </div>
                     </div>
 
-                    <div class="upload-form">
-                        <label class="button cta-link" for="meal_camera_input" style="width:fit-content;">Quick Meal Photo</label>
-                        <input id="meal_camera_input" class="hidden-camera-input" type="file" accept="image/*" capture="environment">
-                        <input id="meal_image" type="file" accept="image/*" capture="environment">
-                        <textarea id="meal_notes" placeholder="Optional note: salmon bowl with spinach, rice, avocado"></textarea>
-                        <button type="button" onclick="analyzeMeal()">Analyze Meal</button>
-                        <div id="meal_status" class="footnote">Choose or snap a meal photo. On mobile, upload starts analysis automatically.</div>
+                    <div class="meal-upload-grid">
+                        <div class="meal-dropzone">
+                            <div class="meal-dropzone-copy">
+                                <strong>Drop a meal photo or snap one fast</strong>
+                                <p>Start here when you want the easiest path: show a plate, get likely nutrient signals, then decide if you need anything else.</p>
+                            </div>
+                            <label class="button cta-link" for="meal_camera_input" style="width:fit-content;">Quick Meal Photo</label>
+                            <input id="meal_camera_input" class="hidden-camera-input" type="file" accept="image/*" capture="environment">
+                            <input id="meal_image" type="file" accept="image/*" capture="environment">
+                        </div>
+                        <div class="upload-form">
+                            <textarea id="meal_notes" placeholder="Optional note: salmon bowl with spinach, rice, avocado"></textarea>
+                            <button type="button" onclick="analyzeMeal()">Analyze Meal</button>
+                            <div id="meal_status" class="footnote">Choose or snap a meal photo. On mobile, upload starts analysis automatically.</div>
+                        </div>
                     </div>
 
                     <div class="analysis-grid" style="margin-top: 16px;">
                         <div class="box">
                             <h4>Meal Summary</h4>
-                            <p id="meal_summary">No meal analyzed yet.</p>
+                            <p id="meal_summary">Your first meal summary will show up here.</p>
                         </div>
                         <div class="box">
                             <h4>Strong Signals</h4>
@@ -812,6 +1147,40 @@
                                 <li class="empty-state">Sign in to store meal analysis history by profile.</li>
                             </ul>
                         </div>
+                    </div>
+                </section>
+
+                <section class="card detail-section is-hidden" id="search-section">
+                    <div class="section-title">
+                        <div>
+                            <div class="section-kicker"><span class="section-icon icon-catalog" aria-hidden="true"></span><h2>Browse Your Shelf</h2></div>
+                            <p>Search the shelf when you want to add something specific.</p>
+                        </div>
+                    </div>
+                    <div class="search-box">
+                        <input id="budget_input" type="text" placeholder="Search magnesium, probiotic, multivitamin, fish oil, prenatal...">
+                        <button class="subtle-button" onclick="search()">Search</button>
+                    </div>
+                    <div id="search_status" class="status-text">Search by nutrient, benefit, or product type.</div>
+                    <ul id="result_list"></ul>
+                </section>
+
+                <section class="card tool-card detail-section is-hidden" id="coach-section">
+                    <div class="section-title">
+                        <div>
+                            <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Vitabit Coach</h2></div>
+                            <p>Ask when you need timing, stacking, or gap help.</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-input">
+                        <textarea id="chat_prompt" placeholder="Ask something like: I take magnesium at night and vitamin D in the morning. What should I watch for if I also take medication and rarely eat fish?"></textarea>
+                        <button type="button" class="subtle-button" onclick="sendChat()">Ask the Coach</button>
+                        <div id="chat_status" class="footnote">Ready. For treatment decisions or medication changes, consult a clinician.</div>
+                    </div>
+
+                    <div class="chat-feed">
+                        <ul id="chat_messages"></ul>
                     </div>
                 </section>
             </div>
@@ -862,6 +1231,26 @@
             localStorage.setItem(REMINDER_LOG_KEY, JSON.stringify(value));
         }
 
+        function openDetailSection(sectionId) {
+            var target = $("#" + sectionId);
+            if (!target.length) {
+                return;
+            }
+            $(".detail-section").each(function () {
+                var section = $(this);
+                if (section.attr("id") !== sectionId) {
+                    section.addClass("is-hidden").removeClass("is-entering");
+                }
+            });
+            target.removeClass("is-hidden").addClass("is-entering");
+            setTimeout(function () {
+                target.removeClass("is-entering");
+            }, 260);
+            window.requestAnimationFrame(function () {
+                target[0].scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+
         function getServerCompletion(itemId) {
             return !!(authState.completion_map && authState.completion_map[itemId]);
         }
@@ -910,7 +1299,7 @@
             $("#schedule_progress").text(items.length ? completed + " / " + items.length + " completed today" : "Start with one supplement reminder");
 
             if (!items.length) {
-                $("#schedule_list").html("<li class='empty-state'>No reminders yet. Add supplements or medications from search results, or use the quick planner below.</li>");
+                $("#schedule_list").html("<li class='empty-state'>Nothing scheduled yet. Add one routine and let Vitabit keep the rest in view.</li>");
                 return;
             }
 
@@ -1170,8 +1559,24 @@
             });
         }
 
-        function saveCatalogItem(name, category, itemType) {
-            saveTrackedItem(name, category, itemType, "08:00", "", "catalog");
+        function saveCatalogItem(name, category, itemType, scheduleTime) {
+            saveTrackedItem(name, category, itemType, scheduleTime || "08:00", "", "catalog");
+        }
+
+        function getCatalogTime(button) {
+            var card = $(button).closest(".vitamin-card");
+            var input = card.find(".catalog-time-input");
+            return input.length ? (input.val() || "08:00") : "08:00";
+        }
+
+        function addCatalogReminder(button, name) {
+            var time = getCatalogTime(button);
+            addToSchedule(name, time);
+        }
+
+        function saveCatalogReminder(button, name, category, itemType) {
+            var time = getCatalogTime(button);
+            saveCatalogItem(name, category, itemType, time);
         }
 
         function deleteTrackedItem(itemId) {
@@ -1209,9 +1614,9 @@
                             <h3>${safeHtml(item.name)}</h3>
                             <p>${safeHtml(item.benefit || "No description available.")}</p>
                             <div class="action-inline">
-                                <button type="button" onclick="event.stopPropagation(); addToSchedule('${safeName}', '08:00')">Add 8:00 AM</button>
-                                <button type="button" onclick="event.stopPropagation(); addToSchedule('${safeName}', '20:00')">Add 8:00 PM</button>
-                                <button type="button" onclick="event.stopPropagation(); saveCatalogItem('${safeName}', '${safeHtml(item.category || "Supplement")}', 'supplement')">Save to profile</button>
+                                <input class="catalog-time-input" type="time" value="08:00" onclick="event.stopPropagation()">
+                                <button type="button" onclick="event.stopPropagation(); addCatalogReminder(this, '${safeName}')">Add reminder</button>
+                                <button type="button" onclick="event.stopPropagation(); saveCatalogReminder(this, '${safeName}', '${safeHtml(item.category || "Supplement")}', 'supplement')">Save to profile</button>
                             </div>
                         </div>
                     </div>
@@ -1230,7 +1635,7 @@
         function search() {
             var keyword = $("#budget_input").val().trim();
             if (!keyword) {
-                $("#result_list").html("<li class='empty-state'>Type a vitamin, mineral, supplement, or wellness keyword to search.</li>");
+                $("#result_list").html("<li class='empty-state'>Search a vitamin, mineral, med, or supplement to pull it onto your shelf.</li>");
                 return;
             }
 
@@ -1239,7 +1644,7 @@
                 $("#result_list").empty();
                 $("#search_status").text(data.length ? data.length + " results found" : "No results found");
                 if (!data.length) {
-                    $("#result_list").html("<li class='empty-state'>No catalog items matched that keyword yet.</li>");
+                    $("#result_list").html("<li class='empty-state'>Nothing matched that search yet. Try a nutrient, brand, or use case.</li>");
                     return;
                 }
                 data.forEach(function (item) {
@@ -1247,7 +1652,7 @@
                 });
             }).fail(function () {
                 $("#search_status").text("Search failed.");
-                $("#result_list").html("<li class='empty-state'>Error connecting to the server.</li>");
+                $("#result_list").html("<li class='empty-state'>The catalog did not load right now. Try again in a moment.</li>");
             });
         }
 
@@ -1367,6 +1772,12 @@
             loadAccountData();
             updateNotificationState();
             startReminderLoop();
+
+            if (window.location.hash) {
+                openDetailSection(window.location.hash.replace("#", ""));
+            } else {
+                $("#tracking-section").removeClass("is-hidden");
+            }
 
             $("#budget_input").on("keydown", function (e) {
                 if (e.key === "Enter") {
