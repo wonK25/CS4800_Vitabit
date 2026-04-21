@@ -31,12 +31,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --surface: rgba(249, 252, 255, 0.9);
+            --ink: #1e3138;
+            --muted: #6d7e86;
+            --line: rgba(24, 48, 56, 0.10);
+            --accent: #2f7b7f;
+            --shadow: 0 20px 60px rgba(42, 72, 98, 0.09);
+            --radius-xl: 22px;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
             font-family: "Instrument Sans", sans-serif;
-            background: linear-gradient(180deg, #f7f1e8 0%, #efe6d8 100%);
-            color: #1f2a1d;
+            background:
+                radial-gradient(ellipse 55% 40% at 5% 0%, rgba(108, 149, 207, 0.10), transparent 50%),
+                radial-gradient(ellipse 40% 35% at 95% 5%, rgba(47, 123, 127, 0.08), transparent 50%),
+                radial-gradient(ellipse 30% 30% at 80% 95%, rgba(138, 144, 214, 0.06), transparent 50%),
+                linear-gradient(180deg, #f9fcff 0%, #f1f7f8 100%);
+            color: var(--ink);
             display: grid;
             place-items: center;
             padding: 20px;
@@ -44,10 +58,10 @@
 
         .card {
             width: min(760px, 100%);
-            background: rgba(255, 252, 246, 0.94);
+            background: var(--surface);
             border: 1px solid rgba(255, 255, 255, 0.45);
-            box-shadow: 0 24px 60px rgba(57, 43, 18, 0.12);
-            border-radius: 30px;
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-xl);
             padding: 28px;
         }
 
@@ -57,7 +71,7 @@
         }
 
         p {
-            color: #5b6556;
+            color: var(--muted);
             line-height: 1.6;
             margin: 0;
         }
@@ -77,11 +91,12 @@
 
         input, select {
             width: 100%;
-            border: 1px solid rgba(31, 42, 29, 0.12);
-            border-radius: 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
             padding: 13px 14px;
-            background: white;
+            background: rgba(255, 255, 255, 0.88);
             box-sizing: border-box;
+            color: var(--ink);
         }
 
         .actions {
@@ -93,18 +108,18 @@
 
         button {
             border: none;
-            border-radius: 999px;
+            border-radius: 18px;
             padding: 13px 18px;
-            background: #1e6b52;
+            background: var(--accent);
             color: white;
             font-weight: 600;
             cursor: pointer;
         }
 
         .ghost {
-            background: white;
-            color: #1f2a1d;
-            border: 1px solid rgba(31, 42, 29, 0.12);
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            border: 1px solid var(--line);
         }
 
         .note {

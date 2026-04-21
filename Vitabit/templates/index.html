@@ -34,17 +34,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --surface: rgba(255, 252, 246, 0.92);
-            --ink: #1f2a1d;
-            --muted: #6b7264;
-            --line: rgba(31, 42, 29, 0.10);
-            --accent: #1e6b52;
-            --accent-2: #c4602f;
-            --accent-soft: #d7eadf;
+            --surface: rgba(249, 252, 255, 0.9);
+            --ink: #1e3138;
+            --muted: #6d7e86;
+            --line: rgba(24, 48, 56, 0.10);
+            --accent: #2f7b7f;
+            --accent-2: #6c95cf;
+            --accent-soft: #e4f0f2;
             --danger-soft: #f8dfd5;
-            --shadow: 0 20px 60px rgba(57, 43, 18, 0.10);
-            --shadow-sm: 0 4px 20px rgba(57, 43, 18, 0.08);
-            --radius-xl: 28px;
+            --shadow: 0 20px 60px rgba(42, 72, 98, 0.09);
+            --shadow-sm: 0 6px 24px rgba(42, 72, 98, 0.07);
+            --radius-xl: 22px;
             --pill-green: #3ecf8e;
             --pill-pink: #ff7eb3;
             --pill-yellow: #ffd166;
@@ -59,10 +59,10 @@
             font-family: "Plus Jakarta Sans", sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(ellipse 55% 40% at 5% 0%, rgba(212, 168, 106, 0.22), transparent 50%),
-                radial-gradient(ellipse 40% 35% at 95% 5%, rgba(62, 207, 142, 0.13), transparent 50%),
-                radial-gradient(ellipse 30% 30% at 80% 95%, rgba(255, 126, 179, 0.09), transparent 50%),
-                linear-gradient(180deg, #faf4eb 0%, #f2e8d8 100%);
+                radial-gradient(ellipse 55% 40% at 5% 0%, rgba(108, 149, 207, 0.10), transparent 50%),
+                radial-gradient(ellipse 40% 35% at 95% 5%, rgba(47, 123, 127, 0.08), transparent 50%),
+                radial-gradient(ellipse 30% 30% at 80% 95%, rgba(138, 144, 214, 0.06), transparent 50%),
+                linear-gradient(180deg, #f9fcff 0%, #f1f7f8 100%);
             min-height: 100vh;
         }
 
@@ -109,7 +109,7 @@
         }
 
         .vitamin-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .vitamin-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(57,43,18,0.13); }
+        .vitamin-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(42, 72, 98, 0.11); }
 
         .hero {
             position: relative;
@@ -117,7 +117,7 @@
             padding: 32px 36px 52px;
             display: grid;
             gap: 24px;
-            background: linear-gradient(145deg, rgba(255, 251, 243, 0.88), rgba(237, 252, 246, 0.82));
+            background: linear-gradient(145deg, rgba(250, 253, 255, 0.9), rgba(242, 248, 249, 0.86));
             min-height: 680px;
         }
 
@@ -307,7 +307,7 @@
         .hero-copy {
             display: grid;
             justify-items: center;
-            text-align: left;
+            text-align: center;
             align-content: center;
             min-height: 540px;
             width: 100%;
@@ -315,17 +315,23 @@
 
         .hero-copy > * {
             width: min(100%, 620px);
+            margin-inline: auto;
         }
 
         .hero-copy p { max-width: 52ch; font-size: 1.02rem; margin: 0; }
         .stats, .pill-row, .search-actions, .cta-row, .action-inline, .hero-links, .hero-micro, .quick-chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
-        .cta-row { margin-top: 24px; gap: 12px; }
+        .cta-row {
+            margin-top: 24px;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
         .hero-utility {
             display: grid;
-            justify-items: start;
+            justify-items: center;
             gap: 14px;
             margin-top: 0;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
         .hero-utility p {
@@ -336,9 +342,10 @@
         .hero-kicker {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 8px 14px;
-            border-radius: 999px;
+            border-radius: 18px;
             border: 1px solid var(--line);
             background: rgba(255,255,255,0.72);
             color: var(--accent);
@@ -348,6 +355,8 @@
 
         .hero-micro {
             margin-top: 14px;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero-micro span {
@@ -359,9 +368,42 @@
             color: var(--muted);
         }
 
+        .hero-trust {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.6);
+            text-align: left;
+        }
+
+        .hero-trust-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .hero-trust-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hero-trust-list span {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(228, 240, 242, 0.85);
+            color: var(--accent);
+            font-size: 0.84rem;
+            font-weight: 600;
+        }
+
         .hero-support {
             font-size: 0.92rem;
             color: var(--muted);
+            margin-top: 10px;
         }
 
         .hero-stage {
@@ -373,7 +415,7 @@
 
         .hero-feature-card,
         .hero-side-card {
-            border-radius: 28px;
+            border-radius: 22px;
             border: 1px solid rgba(255,255,255,0.7);
             background: rgba(255,255,255,0.68);
             box-shadow: var(--shadow-sm);
@@ -384,7 +426,7 @@
             display: grid;
             gap: 16px;
             min-height: 0;
-            background: linear-gradient(160deg, rgba(255,250,245,0.9), rgba(237,250,244,0.84));
+            background: linear-gradient(160deg, rgba(250,253,255,0.92), rgba(240,248,249,0.86));
         }
 
         .hero-side-card {
@@ -418,11 +460,11 @@
             text-align: left;
             min-height: 0;
             padding: 18px;
-            border-radius: 24px;
-            border: 1.5px dashed rgba(30, 107, 82, 0.2);
+            border-radius: 18px;
+            border: 1.5px dashed rgba(47, 123, 127, 0.18);
             background:
-                radial-gradient(circle at top right, rgba(255, 126, 179, 0.14), transparent 34%),
-                radial-gradient(circle at bottom left, rgba(116, 185, 255, 0.14), transparent 36%),
+                radial-gradient(circle at top right, rgba(108, 149, 207, 0.12), transparent 34%),
+                radial-gradient(circle at bottom left, rgba(47, 123, 127, 0.10), transparent 36%),
                 rgba(255,255,255,0.74);
         }
 
@@ -451,7 +493,7 @@
             gap: 10px;
             align-items: center;
             padding: 10px 12px;
-            border-radius: 16px;
+            border-radius: 14px;
             background: rgba(255,255,255,0.7);
             border: 1px solid rgba(31, 42, 29, 0.08);
         }
@@ -502,7 +544,7 @@
         .hero-panel .stats > div {
             flex: 1 1 130px;
             padding: 14px;
-            border-radius: 18px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, 0.72);
             border: 1px solid var(--line);
         }
@@ -516,7 +558,7 @@
 
         .button, .ghost-button, .search-box button, .chat-input button, .planner-form button, .upload-form button, .action-inline button {
             border: none;
-            border-radius: 999px;
+            border-radius: 18px;
             padding: 13px 22px;
             cursor: pointer;
             font-family: "Plus Jakarta Sans", sans-serif;
@@ -672,7 +714,7 @@
         .catalog-time-input {
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.84);
-            border-radius: 999px;
+            border-radius: 14px;
             padding: 10px 12px;
             color: var(--ink);
         }
@@ -706,7 +748,7 @@
             width: 100%;
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.8);
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 13px 14px;
             color: var(--ink);
             outline: none;
@@ -1032,7 +1074,7 @@
             <div class="hero-grid">
                 <div class="hero-copy">
                     <div class="hero-utility">
-                        <span class="hero-kicker">Keep daily vitamins and prescriptions from slipping through the cracks.</span>
+                        <span class="hero-kicker">Tracker-first wellness support for supplements, meds, and meals.</span>
                     </div>
                     <h1>Build a routine you will actually remember.</h1>
                     <div class="cta-row">
@@ -1044,28 +1086,36 @@
                         <span>Meals for support</span>
                         <span>Coach on demand</span>
                     </div>
+                    <div class="hero-trust" aria-label="Vitabit trust signals">
+                        <div class="hero-trust-title">Built to feel usable before it feels flashy.</div>
+                        <div class="hero-trust-list">
+                            <span>Profile-based tracking</span>
+                            <span>Meal coverage is estimated</span>
+                            <span>Not a diagnosis tool</span>
+                        </div>
+                    </div>
                     <p class="hero-support">Up to 4 profiles for you, kids, or pets.</p>
                 </div>
                 <div class="hero-stage">
                     <div class="hero-feature-card">
-                        <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today’s setup</h2></div>
+                        <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Tracker-first setup</h2></div>
                         <div class="hero-upload-prompt">
                             <div>
-                                <strong>Set the vitamins and meds you never want to miss</strong>
-                                <p>Start with your household routine first.</p>
+                                <strong>Start with the routine you actually need to remember</strong>
+                                <p>Vitabit tracks supplements and medications first, then uses meal analysis and AI coaching as support.</p>
                             </div>
                             <div class="hero-start-list">
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>Up to 4 profiles in one home</span>
+                                    <span>One place for supplements, meds, and household profiles</span>
                                 </div>
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>For adults, kids, or pets</span>
+                                    <span>Meal coverage stays labeled as an estimate, not a diagnosis</span>
                                 </div>
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>Meal and coach only when needed</span>
+                                    <span>Use AI only when you want timing or gap help</span>
                                 </div>
                             </div>
                         </div>
@@ -1081,7 +1131,7 @@
                     <div class="hero-side-stack">
                         <button type="button" class="hero-side-card hero-tool-trigger" onclick="openDetailSection('meal-section')">
                             <div class="section-kicker"><span class="section-icon icon-meal" aria-hidden="true"></span><h2>Meal</h2></div>
-                            <p class="mini-caption">Check what your plate already covered before adding more.</p>
+                            <p class="mini-caption">Estimate what your plate already covered before adding more.</p>
                         </button>
                         <button type="button" class="hero-side-card hero-tool-trigger" onclick="openDetailSection('coach-section')">
                             <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Coach</h2></div>
@@ -1178,7 +1228,7 @@
                     <div class="section-title">
                         <div>
                             <div class="section-kicker"><span class="section-icon icon-catalog" aria-hidden="true"></span><h2>Browse Your Shelf</h2></div>
-                            <p>Search the shelf when you want to add something specific.</p>
+                            <p>Search the shelf when you want to add something specific to a tracked routine.</p>
                         </div>
                     </div>
                     <div class="search-box">
@@ -1193,7 +1243,7 @@
                     <div class="section-title">
                         <div>
                             <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Vitabit Coach</h2></div>
-                            <p>Ask when you need timing, stacking, or gap help.</p>
+                            <p>Ask when you need timing, stacking, or coverage help around your tracked routine.</p>
                         </div>
                     </div>
 
