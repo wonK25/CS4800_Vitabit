@@ -47,10 +47,12 @@ app.secret_key = FLASK_SECRET_KEY
 
 @app.context_processor
 def inject_analytics_config():
+    base_url = request.url_root.rstrip("/")
     return {
         "ga_measurement_id": GA_MEASUREMENT_ID,
         "ga_enabled": bool(GA_MEASUREMENT_ID),
         "vercel_analytics_enabled": VERCEL_ANALYTICS_ENABLED,
+        "site_base_url": base_url,
     }
 
 NUTRIENT_ALIASES = {
