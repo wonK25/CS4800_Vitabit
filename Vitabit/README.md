@@ -6,9 +6,13 @@
 3. Set `FLASK_SECRET_KEY` for session-based login.
 4. Optional for AI features: set `OPENAI_API_KEY`.
 5. Optional for welcome emails: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_FROM_EMAIL`.
-6. Install dependencies: `pip install -r requirements.txt`
-7. Seed the supplement catalog: `python mongo-test.py`
-8. Run app: `python vitabit_main.py`
+6. Optional for Google Analytics 4: set `GA_MEASUREMENT_ID` (example: `G-XXXXXXXXXX`).
+7. Install dependencies: `pip install -r requirements.txt`
+8. Seed the supplement catalog: `python mongo-test.py`
+9. Run app: `python vitabit_main.py`
+
+## Vercel Web Analytics
+If you enable Web Analytics in the Vercel dashboard, Vitabit automatically loads the Vercel analytics script on Vercel deployments. This provides visitor and page view tracking without additional environment variables.
 
 ## Included MVP features
 - Supplement catalog search across vitamins, minerals, multivitamins, probiotics, fish oil, and store-style supplement formulas
@@ -18,6 +22,8 @@
 - Profile-aware supplement and medication tracking
 - DB-backed daily completion state for tracked routines
 - Profile-specific recent meal analysis history
+- Optional Google Analytics 4 page and interaction tracking for coursework demos
+- Optional Vercel Web Analytics page-view tracking on Vercel deployments
 - AI coach chat endpoint at `/assistant/chat`
 - Meal photo analysis endpoint at `/assistant/analyze-meal`
 
@@ -32,6 +38,7 @@ This repo includes `app.py` and `vercel.json` so Vercel can deploy the Flask app
    - `OPENAI_API_KEY`
    - `OPENAI_CHAT_MODEL` (optional)
    - `OPENAI_VISION_MODEL` (optional)
+   - `GA_MEASUREMENT_ID` (optional)
    - `SMTP_HOST` (optional)
    - `SMTP_PORT` (optional)
    - `SMTP_USERNAME` (optional)

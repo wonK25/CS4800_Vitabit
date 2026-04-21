@@ -29,6 +29,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4.1-mini")
 OPENAI_VISION_MODEL = os.getenv("OPENAI_VISION_MODEL", "gpt-4.1-mini")
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "vitabit-dev-secret")
+GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "").strip()
+VERCEL_ANALYTICS_ENABLED = os.getenv("VERCEL") == "1"
 
 client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
 db = client["Vitabit-Database"]
@@ -41,6 +43,15 @@ meal_analyses_collection = db["meal_analyses"]
 
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
+
+
+@app.context_processor
+def inject_analytics_config():
+    return {
+        "ga_measurement_id": GA_MEASUREMENT_ID,
+        "ga_enabled": bool(GA_MEASUREMENT_ID),
+        "vercel_analytics_enabled": VERCEL_ANALYTICS_ENABLED,
+    }
 
 NUTRIENT_ALIASES = {
     "Vitamin D": ["vitamin d", "vitamin d3", "d3"],

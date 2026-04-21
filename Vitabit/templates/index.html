@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vitabit | AI Supplement Tracker</title>
+    {% if ga_enabled %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "{{ ga_measurement_id }}");
+    </script>
+    {% endif %}
+    {% if vercel_analytics_enabled %}
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    {% endif %}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1197,6 +1212,11 @@
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
         let reminderTimer = null;
 
+        function trackEvent(eventName, params) {
+            if (typeof gtag !== "function") return;
+            gtag("event", eventName, params || {});
+        }
+
         function fallbackImageDataUri(name) {
             var firstChar = (name || "V").charAt(0).toUpperCase();
             var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" rx="18" ry="18" fill="#d7eadf"/><text x="50%" y="56%" text-anchor="middle" fill="#1e6b52" font-size="34" font-family="Arial, sans-serif">${firstChar}</text></svg>`;
@@ -1249,6 +1269,9 @@
             window.requestAnimationFrame(function () {
                 target[0].scrollIntoView({ behavior: "smooth", block: "start" });
             });
+            trackEvent("section_opened", {
+                section_id: sectionId
+            });
         }
 
         function getServerCompletion(itemId) {
@@ -1279,6 +1302,10 @@
             var schedule = getSchedule();
             schedule.push({ id: Date.now().toString() + Math.random().toString(16).slice(2), name: name, time: time || "08:00", completed: false });
             setSchedule(schedule);
+            trackEvent("local_reminder_added", {
+                item_name: name || "unnamed",
+                reminder_time: time || "08:00"
+            });
             renderSchedule();
         }
 
@@ -1357,6 +1384,9 @@
             }
 
             Notification.requestPermission().then(function () {
+                trackEvent("notification_permission_updated", {
+                    permission: Notification.permission
+                });
                 updateNotificationState();
                 if (Notification.permission === "granted") {
                     showReminderToast("Reminder alerts enabled", "Vitabit can now show browser reminders while this page is open.");
@@ -1551,6 +1581,11 @@
                     source_type: sourceType || "manual"
                 }),
                 success: function () {
+                    trackEvent("tracked_item_saved", {
+                        item_name: name || "unnamed",
+                        item_type: itemType || "supplement",
+                        source_type: sourceType || "manual"
+                    });
                     loadAccountData();
                 },
                 error: function (xhr) {
@@ -1580,22 +1615,33 @@
         }
 
         function deleteTrackedItem(itemId) {
+            var item = (authState.tracked_items || []).find(function (entry) { return entry._id === itemId; });
             $.ajax({
                 url: "/api/tracked-items/" + itemId,
                 method: "DELETE",
                 success: function () {
+                    trackEvent("tracked_item_deleted", {
+                        item_name: item ? item.name : "unknown",
+                        item_type: item ? item.item_type : "unknown"
+                    });
                     loadAccountData();
                 }
             });
         }
 
         function toggleTrackedCompletion(itemId, completed) {
+            var item = (authState.tracked_items || []).find(function (entry) { return entry._id === itemId; });
             $.ajax({
                 url: "/api/tracked-items/" + itemId + "/completion",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ completed: completed }),
                 success: function () {
+                    trackEvent("tracked_item_completion_toggled", {
+                        item_name: item ? item.name : "unknown",
+                        item_type: item ? item.item_type : "unknown",
+                        completed: completed
+                    });
                     loadAccountData();
                 }
             });
@@ -1663,6 +1709,10 @@
 
             $("#search_status").text("Searching...");
             $.getJSON(`/search/${encodeURIComponent(keyword)}`, function (data) {
+                trackEvent("search", {
+                    search_term: keyword,
+                    results_count: data.length || 0
+                });
                 if (!data.length) {
                     $("#search_status").text("No results found");
                     $("#result_list").html("<li class='empty-state'>Nothing matched that search yet. Try a nutrient, brand, or use case.</li>");
@@ -1694,6 +1744,9 @@
             }
 
             appendChatMessage("user", "You", message, []);
+            trackEvent("assistant_chat_sent", {
+                prompt_length: message.length
+            });
             $("#chat_prompt").val("");
             $("#chat_status").text("Thinking...");
 
@@ -1772,6 +1825,9 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    trackEvent("meal_analysis_completed", {
+                        has_notes: !!$("#meal_notes").val().trim()
+                    });
                     renderMealAnalysis(data);
                     $("#meal_status").text("Analysis complete");
                     $("#meal_camera_input").val("");
@@ -1818,6 +1874,10 @@
             });
 
             $("#result_list").on("click", ".vitamin-card", function () {
+                var supplementName = $(this).find("h3").first().text().trim();
+                trackEvent("catalog_item_opened", {
+                    item_name: supplementName || "unknown"
+                });
                 $(this).toggleClass("open");
             });
 
@@ -1836,6 +1896,10 @@
                     return;
                 }
                 addToSchedule(name, time || "08:00");
+                trackEvent("quick_add_submitted", {
+                    item_name: name,
+                    reminder_time: time || "08:00"
+                });
                 $("#quick_name").val("");
             });
 

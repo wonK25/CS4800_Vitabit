@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vitabit | Profile</title>
+    {% if ga_enabled %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "{{ ga_measurement_id }}");
+    </script>
+    {% endif %}
+    {% if vercel_analytics_enabled %}
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    {% endif %}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -377,6 +392,11 @@
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
         let dashboardRange = "today";
 
+        function trackEvent(eventName, params) {
+            if (typeof gtag !== "function") return;
+            gtag("event", eventName, params || {});
+        }
+
         function safeHtml(text) {
             return $("<div>").text(text || "").html();
         }
@@ -570,6 +590,10 @@
 
         function selectProfile(profileId) {
             $.post("/api/profiles/" + profileId + "/select", function () {
+                var selected = (authState.profiles || []).find(function (item) { return item._id === profileId; });
+                trackEvent("profile_selected", {
+                    profile_name: selected ? selected.name : "unknown"
+                });
                 loadAccountData();
             });
         }
@@ -614,6 +638,9 @@
                 : $.ajax({ url: "/api/profiles", method: "POST", contentType: "application/json", data: JSON.stringify(payload) });
 
             request.done(function () {
+                trackEvent(editId ? "profile_updated" : "profile_created", {
+                    profile_name: payload.name || "unnamed"
+                });
                 $("#profile_form").removeData("edit-id")[0].reset();
                 $("#profile_height_unit").val("cm");
                 $("#profile_weight_unit").val("kg");
@@ -626,8 +653,14 @@
 
         function deleteProfile(profileId) {
             if (!confirm("Delete this household profile and all of its tracked items and meal history?")) return;
+            var profile = (authState.profiles || []).find(function (item) { return item._id === profileId; });
             $.ajax({ url: "/api/profiles/" + profileId, method: "DELETE" })
-                .done(loadAccountData)
+                .done(function () {
+                    trackEvent("profile_deleted", {
+                        profile_name: profile ? profile.name : "unknown"
+                    });
+                    loadAccountData();
+                })
                 .fail(function (xhr) { alert((xhr.responseJSON || {}).error || "Profile could not be deleted."); });
         }
 
@@ -644,6 +677,11 @@
                     source_type: "manual"
                 })
             }).done(function () {
+                trackEvent("tracked_item_saved", {
+                    item_name: $("#tracked_name").val().trim() || "unnamed",
+                    item_type: $("#tracked_type").val() || "supplement",
+                    source_type: "manual"
+                });
                 $("#tracked_item_form")[0].reset();
                 $("#tracked_time").val("08:00");
                 loadAccountData();
@@ -653,7 +691,14 @@
         }
 
         function deleteTrackedItem(itemId) {
-            $.ajax({ url: "/api/tracked-items/" + itemId, method: "DELETE" }).done(loadAccountData);
+            var item = (authState.tracked_items || []).find(function (entry) { return entry._id === itemId; });
+            $.ajax({ url: "/api/tracked-items/" + itemId, method: "DELETE" }).done(function () {
+                trackEvent("tracked_item_deleted", {
+                    item_name: item ? item.name : "unknown",
+                    item_type: item ? item.item_type : "unknown"
+                });
+                loadAccountData();
+            });
         }
 
         function toggleTrackedDashboard(itemId, nextValue) {
@@ -662,13 +707,21 @@
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ show_in_dashboard: nextValue })
-            }).done(loadAccountData);
+            }).done(function () {
+                trackEvent("dashboard_visibility_changed", {
+                    show_in_dashboard: nextValue
+                });
+                loadAccountData();
+            });
         }
 
         $(function () {
             loadAccountData();
             $("#dashboard_ranges").on("click", "button", function () {
                 dashboardRange = $(this).data("range");
+                trackEvent("dashboard_range_selected", {
+                    dashboard_range: dashboardRange
+                });
                 renderDashboardSummary();
             });
             $("#profile_form").on("submit", function (e) {
