@@ -22,7 +22,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --surface: rgba(249, 252, 255, 0.9);
@@ -34,12 +34,16 @@
             --danger-soft: #f8dfd5;
             --shadow: 0 20px 60px rgba(42, 72, 98, 0.09);
             --radius-xl: 22px;
+            --space-1: 8px;
+            --space-2: 12px;
+            --space-3: 16px;
+            --space-4: 24px;
         }
 
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Instrument Sans", sans-serif;
+            font-family: "Plus Jakarta Sans", sans-serif;
             color: var(--ink);
             background:
                 radial-gradient(ellipse 55% 40% at 5% 0%, rgba(108, 149, 207, 0.10), transparent 50%),
@@ -50,7 +54,7 @@
         }
 
         h1, h2, h3, h4 {
-            font-family: "Space Grotesk", sans-serif;
+            font-family: "Nunito", sans-serif;
             margin: 0;
         }
 
@@ -68,27 +72,89 @@
             border-radius: var(--radius-xl);
         }
 
-        .hero, .card { padding: 24px; }
-        .hero { margin-bottom: 20px; }
-        .topbar, .section-title, .profile-chip, .tracked-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .hero, .card { padding: var(--space-4); }
+        .hero {
+            padding-top: 32px;
+            padding-bottom: 20px;
+        }
+        .hero { margin-bottom: var(--space-4); }
+        .topbar, .section-title, .profile-chip, .tracked-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
         .topbar, .section-title { flex-wrap: wrap; }
-        .profile-hero-mascot { width: 78px; height: auto; display: block; flex: 0 0 auto; }
-        .layout { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 20px; align-items: start; }
-        .column, .stack, .profile-list, .tracked-items-list, #meal_history, #dashboard_summary { display: grid; gap: 12px; }
+        .card > .section-title {
+            margin-bottom: var(--space-3);
+        }
+        #auth_topbar {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+        .auth-topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+        .profile-hero-mascot { width: 72px; height: auto; display: block; flex: 0 0 auto; }
+        .auth-topbar-mascot { width: 54px; height: auto; display: block; flex: 0 0 auto; }
+        .profile-hero-layout {
+            display: block;
+            margin-top: var(--space-1);
+        }
+        .profile-hero-copy {
+            display: grid;
+            gap: 0;
+            min-width: 0;
+        }
+        .profile-hero-heading {
+            display: inline-flex;
+            align-items: flex-end;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+        }
+        .profile-hero-copy h1 {
+            font-size: 1.05rem;
+            line-height: 1.15;
+            letter-spacing: -0.04em;
+            font-weight: 600;
+        }
+        .auth-topbar-actions .ghost-button {
+            min-width: 150px;
+            text-align: center;
+            padding: var(--space-3) var(--space-4);
+            border-radius: 24px;
+            font-family: "Nunito", sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 14px 28px rgba(42, 72, 98, 0.08);
+        }
+        .layout { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: var(--space-4); align-items: start; }
+        .column, .stack, .profile-list, .tracked-items-list, #meal_history, #dashboard_summary { display: grid; gap: var(--space-3); }
 
-        .brand { display: inline-flex; gap: 12px; align-items: center; font-family: "Space Grotesk", sans-serif; font-weight: 700; }
+        .brand { display: inline-flex; gap: var(--space-2); align-items: center; font-family: "Nunito", sans-serif; font-weight: 800; }
         .brand-link { color: inherit; text-decoration: none; }
+        .brand-label {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #2f7b7f 0%, #6c95cf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .brand-mark {
             width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
-            background: linear-gradient(135deg, var(--accent), #6c95cf); color: white;
+            background: linear-gradient(135deg, #2f7b7f 0%, #6c95cf 100%); color: white;
         }
 
         .button, .ghost-button, .inline-secondary, .danger-button {
             border: none; border-radius: 18px; padding: 10px 14px; cursor: pointer; font: inherit;
         }
-        .button { background: var(--accent); color: white; font-weight: 600; }
+        .button { background: linear-gradient(135deg, #2f7b7f 0%, #6c95cf 100%); color: white; font-weight: 600; }
         .ghost-button { background: rgba(255,255,255,0.82); color: var(--ink); border: 1px solid var(--line); }
-        .inline-secondary { background: rgba(30, 107, 82, 0.12); color: var(--accent); }
+        .inline-secondary { background: rgba(47, 123, 127, 0.12); color: var(--accent); }
         .danger-button { background: var(--danger-soft); color: #8d3b1d; }
 
         input, select {
@@ -100,19 +166,19 @@
             border: 1px solid var(--line);
             border-radius: 18px;
             background: rgba(255,255,255,0.52);
-            padding: 12px;
-            margin-top: 20px;
+            padding: var(--space-2);
+            margin-top: var(--space-4);
         }
 
         details.form-panel summary {
             list-style: none;
             cursor: pointer;
-            font-family: "Space Grotesk", sans-serif;
+            font-family: "Nunito", sans-serif;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: var(--space-2);
             padding: 4px 2px;
         }
 
@@ -121,42 +187,42 @@
         }
 
         .summary-hint {
-            font-family: "Instrument Sans", sans-serif;
+            font-family: "Plus Jakarta Sans", sans-serif;
             font-size: 0.92rem;
             color: var(--muted);
             font-weight: 500;
         }
 
         .form-panel-body {
-            margin-top: 14px;
+            margin-top: var(--space-2);
         }
 
         .inline-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
+            gap: var(--space-2);
         }
 
         .profile-chip, .tracked-row, .box {
             padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,0.76);
         }
 
-        .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        .pill-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
         #profile_overview {
-            gap: 14px;
-            margin-bottom: 6px;
+            gap: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         #profile_overview .pill-row {
-            margin-top: 2px;
+            margin-top: var(--space-1);
         }
 
         #profile_list {
-            margin-top: 6px;
+            margin-top: var(--space-2);
         }
 
         #profile_form {
-            margin-top: 10px;
+            margin-top: var(--space-2);
         }
 
         .mini-pill {
@@ -168,8 +234,8 @@
         .toggle-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 6px;
+            gap: var(--space-2);
+            margin-bottom: var(--space-2);
         }
 
         .toggle-row button {
@@ -191,12 +257,12 @@
         .metric-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
+            gap: var(--space-2);
         }
 
         .coverage-list {
             display: grid;
-            gap: 12px;
+            gap: var(--space-2);
         }
 
         .coverage-row {
@@ -208,7 +274,7 @@
             display: flex;
             align-items: baseline;
             justify-content: space-between;
-            gap: 12px;
+            gap: var(--space-2);
             flex-wrap: wrap;
         }
 
@@ -230,6 +296,10 @@
             font-size: 0.9rem;
             color: var(--muted);
         }
+        .card > .coverage-meta {
+            margin-top: -4px;
+            margin-bottom: var(--space-3);
+        }
 
         .field-hint {
             font-size: 0.86rem;
@@ -238,7 +308,7 @@
         }
 
         .page-footer {
-            margin-top: 20px;
+            margin-top: var(--space-4);
             padding: 18px 4px 0;
             color: var(--muted);
             font-size: 0.92rem;
@@ -262,6 +332,8 @@
             .layout { grid-template-columns: 1fr; }
             .inline-grid { grid-template-columns: 1fr; }
             .profile-hero-mascot { width: 64px; }
+            .profile-hero-heading { align-items: center; }
+            .auth-topbar-actions { justify-content: flex-start; }
         }
     </style>
 </head>
@@ -271,17 +343,16 @@
             <div class="topbar">
                 <a class="brand brand-link" href="/profile">
                     <span class="brand-mark">V</span>
-                    <span>Vitabit Profile</span>
+                    <span class="brand-label">Vitabit Profile</span>
                 </a>
                 <div id="auth_topbar"></div>
             </div>
-            <div class="section-title">
-                <div>
-                    <h1>Manage your household wellness</h1>
-                    <p>Edit profile details, switch family members, manage supplement and medication routines, and review recent meal trends.</p>
+            <div class="profile-hero-layout">
+                <div class="profile-hero-copy">
+                    <div class="profile-hero-heading">
+                        <h1>Manage your household wellness</h1>
+                    </div>
                 </div>
-                <img class="profile-hero-mascot" src="{{ url_for('static', filename='images/mascots/mascot-hydration-2.png') }}" alt="Profile helper mascot">
-                <a class="ghost-button" href="/">Back to Home</a>
             </div>
         </section>
 
@@ -564,8 +635,10 @@
             }
 
             $("#auth_topbar").html(`
-                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <div class="auth-topbar-actions">
+                    <img class="auth-topbar-mascot" src="{{ url_for('static', filename='images/mascots/mascot-hydration-2.png') }}" alt="Profile helper mascot">
                     <span class="mini-pill">${safeHtml(authState.user.email)}</span>
+                    <a class="ghost-button" href="/">Back to Home</a>
                     <form method="post" action="/auth/logout" style="margin:0;">
                         <button class="ghost-button" type="submit">Log Out</button>
                     </form>

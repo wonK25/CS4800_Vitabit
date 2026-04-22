@@ -29,7 +29,7 @@
     {% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --surface: rgba(249, 252, 255, 0.9);
@@ -39,12 +39,16 @@
             --accent: #2f7b7f;
             --shadow: 0 20px 60px rgba(42, 72, 98, 0.09);
             --radius-xl: 22px;
+            --space-1: 8px;
+            --space-2: 12px;
+            --space-3: 16px;
+            --space-4: 24px;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: "Instrument Sans", sans-serif;
+            font-family: "Plus Jakarta Sans", sans-serif;
             background:
                 radial-gradient(ellipse 55% 40% at 5% 0%, rgba(108, 149, 207, 0.10), transparent 50%),
                 radial-gradient(ellipse 40% 35% at 95% 5%, rgba(47, 123, 127, 0.08), transparent 50%),
@@ -53,7 +57,7 @@
             color: var(--ink);
             display: grid;
             place-items: center;
-            padding: 20px;
+            padding: var(--space-4);
         }
 
         .card {
@@ -62,11 +66,11 @@
             border: 1px solid rgba(255, 255, 255, 0.45);
             box-shadow: var(--shadow);
             border-radius: var(--radius-xl);
-            padding: 28px;
+            padding: var(--space-4);
         }
 
         h1, h2 {
-            font-family: "Space Grotesk", sans-serif;
+            font-family: "Nunito", sans-serif;
             margin: 0 0 10px;
         }
 
@@ -79,13 +83,13 @@
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 18px;
+            gap: var(--space-3);
+            margin-top: var(--space-3);
         }
 
         label {
             display: grid;
-            gap: 8px;
+            gap: var(--space-1);
             font-weight: 600;
         }
 
@@ -101,16 +105,16 @@
 
         .actions {
             display: flex;
-            gap: 12px;
+            gap: var(--space-2);
             flex-wrap: wrap;
-            margin-top: 18px;
+            margin-top: var(--space-3);
         }
 
         button {
             border: none;
             border-radius: 18px;
             padding: 13px 18px;
-            background: var(--accent);
+            background: linear-gradient(135deg, #2f7b7f 0%, #6c95cf 100%);
             color: white;
             font-weight: 600;
             cursor: pointer;
@@ -123,7 +127,7 @@
         }
 
         .note {
-            margin-top: 14px;
+            margin-top: var(--space-3);
             font-size: 0.92rem;
         }
 
