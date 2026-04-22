@@ -77,6 +77,16 @@
             margin: 0 0 10px;
         }
 
+        .brand-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .brand-link:hover {
+            color: #1e6b52;
+        }
+
         p {
             color: var(--muted);
             line-height: 1.6;
@@ -88,6 +98,30 @@
             gap: 10px;
             flex-wrap: wrap;
             margin-top: 20px;
+        }
+
+        .auth-mascot-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 22px;
+            margin-bottom: 6px;
+        }
+
+        .auth-mascot {
+            display: grid;
+            place-items: center;
+            padding: 12px 8px;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(239, 248, 250, 0.72));
+            border: 1px solid rgba(24, 48, 56, 0.06);
+        }
+
+        .auth-mascot img {
+            width: 100%;
+            max-width: 118px;
+            height: auto;
+            display: block;
         }
 
         .pill {
@@ -138,9 +172,34 @@
             font-size: 0.92rem;
         }
 
+        .page-footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.88rem;
+            padding: 2px 4px 0;
+        }
+
+        .homepage-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .homepage-link:hover {
+            color: #1e6b52;
+            text-decoration: underline;
+        }
+
         @media (max-width: 820px) {
             .wrap {
                 grid-template-columns: 1fr;
+            }
+            .auth-mascot-row {
+                gap: 10px;
+            }
+            .auth-mascot {
+                padding: 10px 6px;
             }
         }
     </style>
@@ -148,8 +207,13 @@
 <body>
     <main class="wrap">
         <section class="panel">
-            <h1>Vitabit</h1>
+            <h1><a class="brand-link" href="{{ url_for('index') }}">Vitabit</a></h1>
             <p>Sign in to save your wellness routine, support up to 4 household profiles, and keep supplement and medication tracking in one place.</p>
+            <div class="auth-mascot-row" aria-label="Vitabit mascots">
+                <div class="auth-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-wave.png') }}" alt="Waving Vitabit mascot"></div>
+                <div class="auth-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-heart.png') }}" alt="Heart Vitabit mascot"></div>
+                <div class="auth-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-book.png') }}" alt="Reading Vitabit mascot"></div>
+            </div>
             <div class="pill-row">
                 <span class="pill">Family profiles</span>
                 <span class="pill">Supplement routines</span>
@@ -157,7 +221,7 @@
                 <span class="pill">AI wellness context</span>
             </div>
             <p class="footnote">Vitabit supports wellness tracking. For diagnosis, treatment, or medication changes, consult a licensed clinician or pharmacist.</p>
-            <p class="footnote"><a class="button-link" href="{{ url_for('index') }}">Back to homepage</a></p>
+            <p class="footnote"><a class="homepage-link" href="{{ url_for('index') }}">Back to homepage</a></p>
         </section>
 
         <section class="panel">
@@ -182,6 +246,7 @@
             <p class="footnote">Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.</p>
             <p class="footnote">If email delivery is configured on the server, a welcome email will be sent after sign up.</p>
         </section>
+        <footer class="page-footer">&copy; 2026 Vitabit. All rights reserved.</footer>
     </main>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

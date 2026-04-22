@@ -44,7 +44,7 @@
             --danger-soft: #f8dfd5;
             --shadow: 0 20px 60px rgba(42, 72, 98, 0.09);
             --shadow-sm: 0 6px 24px rgba(42, 72, 98, 0.07);
-            --radius-xl: 22px;
+            --radius-xl: 14px;
             --pill-green: #3ecf8e;
             --pill-pink: #ff7eb3;
             --pill-yellow: #ffd166;
@@ -70,32 +70,6 @@
         p { margin: 0; color: var(--muted); line-height: 1.6; }
         button, input, textarea { font: inherit; }
 
-        /* ── floating pill keyframes ── */
-        @keyframes floatA {
-            0%, 100% { transform: rotate(-22deg) translateY(0px); }
-            50%       { transform: rotate(-22deg) translateY(-14px); }
-        }
-        @keyframes floatB {
-            0%, 100% { transform: rotate(14deg) translateY(0px); }
-            50%       { transform: rotate(14deg) translateY(-18px); }
-        }
-        @keyframes floatC {
-            0%, 100% { transform: rotate(-8deg) translateY(0px); }
-            50%       { transform: rotate(-8deg) translateY(-10px); }
-        }
-        @keyframes floatD {
-            0%, 100% { transform: rotate(30deg) translateY(0px); }
-            50%       { transform: rotate(30deg) translateY(-16px); }
-        }
-        @keyframes floatE {
-            0%, 100% { transform: rotate(-40deg) translateY(0px); }
-            50%       { transform: rotate(-40deg) translateY(-12px); }
-        }
-        @keyframes floatF {
-            0%, 100% { transform: rotate(20deg) translateY(0px); }
-            50%       { transform: rotate(20deg) translateY(-20px); }
-        }
-
         .shell {
             width: min(1560px, calc(100% - 24px));
             margin: 16px auto 44px;
@@ -114,41 +88,38 @@
         .hero {
             position: relative;
             overflow: hidden;
-            padding: 32px 36px 52px;
+            padding: 40px 32px 52px;
             display: grid;
-            gap: 24px;
-            background: linear-gradient(145deg, rgba(250, 253, 255, 0.9), rgba(242, 248, 249, 0.86));
-            min-height: 680px;
+            gap: 30px;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(116, 185, 255, 0.10), transparent 24%),
+                radial-gradient(circle at 84% 18%, rgba(255, 126, 179, 0.10), transparent 24%),
+                linear-gradient(180deg, rgba(248, 252, 255, 0.96), rgba(244, 249, 251, 0.94));
+            min-height: 760px;
         }
 
-        /* ── floating pill decorations ── */
         .hero-pills {
             position: absolute;
-            inset: 0;
+            inset: 0 0 auto 0;
+            height: 120px;
             pointer-events: none;
-            z-index: 0;
         }
 
-        .hp {
+        .hero-pill {
             position: absolute;
             border-radius: 999px;
-            opacity: 0.55;
+            opacity: 0.72;
+            filter: blur(0.2px);
         }
 
-        /* pill shapes: wide capsule */
-        .hp-1 { width: 100px; height: 42px; top: 12%; left: 7%;  background: linear-gradient(135deg, var(--pill-pink), var(--pill-purple)); animation: floatA 4.2s ease-in-out infinite; }
-        .hp-2 { width: 72px;  height: 32px; top: 18%; right: 10%; background: linear-gradient(135deg, var(--pill-yellow), var(--pill-orange)); animation: floatB 5.1s ease-in-out infinite; }
-        .hp-3 { width: 86px;  height: 36px; top: 62%; left: 5%;  background: linear-gradient(135deg, var(--pill-blue), var(--pill-green)); animation: floatC 4.7s ease-in-out infinite; }
-        .hp-4 { width: 60px;  height: 28px; top: 72%; right: 8%; background: linear-gradient(135deg, var(--pill-green), var(--pill-yellow)); animation: floatD 3.9s ease-in-out infinite; }
-        .hp-5 { width: 50px;  height: 22px; top: 38%; left: 3%;  background: linear-gradient(135deg, var(--pill-orange), var(--pill-pink)); animation: floatE 5.5s ease-in-out infinite; }
-        .hp-6 { width: 78px;  height: 34px; top: 48%; right: 5%; background: linear-gradient(135deg, var(--pill-purple), var(--pill-blue)); animation: floatF 4.4s ease-in-out infinite; }
-        /* small round pills */
-        .hp-7  { width: 28px; height: 28px; top: 8%;  right: 25%; background: var(--pill-green);  animation: floatB 3.8s ease-in-out infinite; opacity: 0.45; }
-        .hp-8  { width: 20px; height: 20px; top: 80%; left: 22%;  background: var(--pill-pink);   animation: floatA 4.9s ease-in-out infinite; opacity: 0.4; }
-        .hp-9  { width: 24px; height: 24px; top: 55%; right: 22%; background: var(--pill-yellow); animation: floatC 5.2s ease-in-out infinite; opacity: 0.45; }
-        .hp-10 { width: 16px; height: 16px; top: 25%; left: 18%;  background: var(--pill-blue);   animation: floatD 4.1s ease-in-out infinite; opacity: 0.5; }
-
-        .hero > * { position: relative; z-index: 2; }
+        .hero-pill.left-a,
+        .hero-pill.left-b,
+        .hero-pill.left-c { display: none; }
+        .hero-pill.dot-a { left: 388px; top: 26px; width: 22px; height: 22px; background: rgba(116, 185, 255, 0.84); }
+        .hero-pill.dot-b { left: 458px; top: 28px; width: 26px; height: 26px; background: rgba(255, 126, 179, 0.6); }
+        .hero-pill.right-a { right: 122px; top: 22px; width: 100px; height: 42px; background: rgba(255, 209, 102, 0.68); transform: rotate(14deg); }
+        .hero-pill.right-b { right: 78px; top: 18px; width: 84px; height: 34px; background: rgba(62, 207, 142, 0.48); transform: rotate(18deg); }
+        .hero-pill.right-c { right: 46px; top: 14px; width: 76px; height: 34px; background: rgba(116, 185, 255, 0.66); transform: rotate(-24deg); }
 
         .topbar, .section-title {
             display: flex;
@@ -156,6 +127,18 @@
             justify-content: space-between;
             gap: 16px;
             flex-wrap: wrap;
+        }
+
+        #auth_topbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .auth-label-mobile {
+            display: none;
         }
 
         .section-kicker {
@@ -255,7 +238,7 @@
             font-family: "Space Grotesk", sans-serif;
             font-weight: 700;
             letter-spacing: -0.04em;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
         }
 
         .brand-link {
@@ -271,13 +254,13 @@
         }
 
         .brand-pill {
-            width: 26px;
-            height: 17px;
+            width: 28px;
+            height: 16px;
             border-radius: 999px;
             display: inline-block;
             vertical-align: middle;
             background: linear-gradient(90deg, var(--pill-green), var(--pill-blue), var(--pill-pink));
-            box-shadow: 0 2px 8px rgba(62, 207, 142, 0.35);
+            box-shadow: 0 2px 10px rgba(116, 185, 255, 0.22);
         }
 
         .hero-grid, .layout {
@@ -285,152 +268,119 @@
             gap: 24px;
         }
 
-        .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(420px, 0.92fr); align-items: stretch; }
+        .hero-grid { grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr); align-items: start; gap: 22px; }
         .layout { grid-template-columns: 1fr; margin-top: 24px; align-items: start; }
         .column { display: grid; gap: 24px; align-content: start; }
         .card { padding: 28px; }
 
+        .hero-eyebrow {
+            font-size: 0.92rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #1f6d64;
+            margin-bottom: 16px;
+        }
+
         .hero-copy h1 {
-            font-size: clamp(2.5rem, 4.8vw, 4.4rem);
-            line-height: 1.05;
-            letter-spacing: -0.04em;
-            margin: 0 0 20px;
-            max-width: 11ch;
+            font-size: clamp(3.8rem, 7vw, 5.4rem);
+            line-height: 0.96;
+            letter-spacing: -0.05em;
+            margin: 0 0 26px;
+            max-width: 9ch;
             text-align: left;
             font-weight: 900;
-            background: linear-gradient(135deg, #1e6b52 0%, #3d9eff 56%, #ff4d9e 100%);
+            font-family: "Nunito", "Plus Jakarta Sans", sans-serif;
+            background: linear-gradient(135deg, #1f7a74 0%, #3499ef 58%, #b485e6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        .hero-copy h1 em {
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        .hero-subline {
+            margin-top: -10px;
+            font-family: "Nunito", sans-serif;
+            font-size: 1.28rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: #2b6572;
+        }
+
         .hero-copy {
             display: grid;
-            justify-items: center;
-            text-align: center;
+            justify-items: start;
+            text-align: left;
             align-content: center;
             min-height: 540px;
             width: 100%;
         }
 
         .hero-copy > * {
-            width: min(100%, 620px);
-            margin-inline: auto;
+            width: min(100%, 700px);
         }
 
-        .hero-copy p { max-width: 52ch; font-size: 1.02rem; margin: 0; }
+        .hero-copy p { max-width: 36ch; font-size: 1.05rem; margin: 0; color: #6a706f; }
         .stats, .pill-row, .search-actions, .cta-row, .action-inline, .hero-links, .hero-micro, .quick-chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
         .cta-row {
-            margin-top: 24px;
+            margin-top: 26px;
             gap: 12px;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-        }
-        .hero-utility {
-            display: grid;
-            justify-items: center;
-            gap: 14px;
-            margin-top: 0;
-            margin-bottom: 22px;
-        }
-
-        .hero-utility p {
-            font-size: 0.96rem;
-            max-width: 72ch;
-        }
-
-        .hero-kicker {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 18px;
-            border: 1px solid var(--line);
-            background: rgba(255,255,255,0.72);
-            color: var(--accent);
-            font-size: 0.88rem;
-            font-weight: 700;
-        }
-
-        .hero-micro {
-            margin-top: 14px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-micro span {
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid rgba(31, 42, 29, 0.08);
-            font-size: 0.88rem;
-            color: var(--muted);
         }
 
         .hero-trust {
-            display: grid;
-            gap: 10px;
-            margin-top: 16px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--line);
-            background: rgba(255,255,255,0.6);
-            text-align: left;
-        }
-
-        .hero-trust-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--ink);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
         }
 
         .hero-trust-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .hero-trust-list span {
-            padding: 7px 10px;
+            padding: 8px 16px;
             border-radius: 999px;
-            background: rgba(228, 240, 242, 0.85);
-            color: var(--accent);
-            font-size: 0.84rem;
-            font-weight: 600;
-        }
-
-        .hero-support {
-            font-size: 0.92rem;
-            color: var(--muted);
-            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.74);
+            color: #5d6664;
+            font-size: 0.82rem;
+            font-weight: 500;
+            border: 1px solid rgba(24, 48, 56, 0.10);
         }
 
         .hero-stage {
             display: grid;
-            gap: 16px;
+            gap: 18px;
             align-content: stretch;
             min-height: 540px;
+            margin-left: -18px;
         }
 
         .hero-feature-card,
         .hero-side-card {
             border-radius: 22px;
-            border: 1px solid rgba(255,255,255,0.7);
-            background: rgba(255,255,255,0.68);
-            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255,255,255,0.82);
+            background: rgba(255,255,255,0.82);
+            box-shadow: 0 18px 42px rgba(125, 165, 196, 0.10);
         }
 
         .hero-feature-card {
-            padding: 22px;
+            padding: 28px;
             display: grid;
-            gap: 16px;
+            gap: 18px;
             min-height: 0;
-            background: linear-gradient(160deg, rgba(250,253,255,0.92), rgba(240,248,249,0.86));
+            background: linear-gradient(180deg, rgba(252, 254, 255, 0.92), rgba(248, 252, 255, 0.88));
         }
 
         .hero-side-card {
-            padding: 18px;
+            padding: 22px;
             display: grid;
             gap: 12px;
         }
@@ -451,69 +401,98 @@
         .hero-side-stack {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
+            gap: 18px;
+        }
+
+        .hero-stage .section-kicker h2 {
+            color: var(--accent);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            font-size: 0.96rem;
         }
 
         .hero-upload-prompt {
             display: grid;
-            gap: 10px;
+            gap: 16px;
             text-align: left;
             min-height: 0;
-            padding: 18px;
-            border-radius: 18px;
-            border: 1.5px dashed rgba(47, 123, 127, 0.18);
-            background:
-                radial-gradient(circle at top right, rgba(108, 149, 207, 0.12), transparent 34%),
-                radial-gradient(circle at bottom left, rgba(47, 123, 127, 0.10), transparent 36%),
-                rgba(255,255,255,0.74);
+            padding: 18px 20px;
+            border-radius: 20px;
+            border: 1.5px dashed rgba(137, 205, 224, 0.55);
+            background: rgba(251, 254, 255, 0.88);
         }
 
         .hero-upload-prompt strong {
             display: block;
-            font-family: "Nunito", sans-serif;
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-            color: var(--ink);
-        }
-
-        .hero-upload-prompt p {
-            max-width: 34ch;
-            font-size: 0.95rem;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            color: #8b8f95;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 500;
         }
 
         .hero-start-list {
             display: grid;
-            gap: 10px;
-            margin-top: 4px;
+            gap: 14px;
+            margin-top: 0;
         }
 
         .hero-start-item {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 10px;
-            align-items: center;
-            padding: 10px 12px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.7);
-            border: 1px solid rgba(31, 42, 29, 0.08);
+            gap: 14px;
+            align-items: start;
         }
 
         .hero-start-dot {
-            width: 10px;
-            height: 10px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--pill-green), var(--pill-blue));
+            margin-top: 6px;
+            background: #55c496;
+        }
+
+        .hero-start-item:nth-child(2) .hero-start-dot {
+            background: #6597e8;
+        }
+
+        .hero-start-item:nth-child(3) .hero-start-dot {
+            background: #a58ae8;
+        }
+
+        .hero-feature-card .cta-row {
+            margin-top: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .hero-feature-card .ghost-button {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid rgba(31, 42, 29, 0.18);
+            background: rgba(255, 255, 255, 0.82);
+            font-size: 0.95rem;
+        }
+
+        .hero-links {
+            gap: 10px;
+            align-items: center;
         }
 
         .hero-links a {
             color: var(--accent);
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 500;
+            font-size: 0.96rem;
         }
 
         .mini-caption {
-            font-size: 0.88rem;
+            font-size: 0.94rem;
             color: var(--muted);
+            line-height: 1.5;
         }
 
         .chip, .mini-pill, .category-tag {
@@ -558,7 +537,7 @@
 
         .button, .ghost-button, .search-box button, .chat-input button, .planner-form button, .upload-form button, .action-inline button {
             border: none;
-            border-radius: 18px;
+            border-radius: 14px;
             padding: 13px 22px;
             cursor: pointer;
             font-family: "Plus Jakarta Sans", sans-serif;
@@ -654,10 +633,6 @@
             background: rgba(30, 107, 82, 0.12) !important;
         }
 
-        .meal-primary {
-            background: linear-gradient(180deg, rgba(255,250,244,0.92), rgba(241,249,244,0.86));
-        }
-
         .meal-upload-grid {
             display: grid;
             grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
@@ -686,6 +661,50 @@
 
         .tool-card {
             padding: 22px;
+        }
+
+        .catalog-mascot-strip {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .catalog-mascot {
+            display: grid;
+            place-items: center;
+            padding: 10px 8px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(241, 248, 250, 0.74));
+            border: 1px solid rgba(24, 48, 56, 0.06);
+        }
+
+        .catalog-mascot img {
+            width: 100%;
+            max-width: 88px;
+            height: auto;
+            display: block;
+        }
+
+        .section-title-with-mascot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .section-mascot {
+            width: 76px;
+            height: auto;
+            display: block;
+            flex: 0 0 auto;
+        }
+
+        .hero-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .workspace {
@@ -1034,16 +1053,137 @@
 
         @media (max-width: 640px) {
             .shell { width: min(100% - 18px, 1560px); margin-top: 10px; }
-            .hero, .card { padding: 18px; border-radius: 26px; }
-            .hero { min-height: auto; }
-            .topbar, .section-title, .schedule-item, .vitamin-summary, .search-box {
+            .hero, .card { padding: 18px; border-radius: 18px; }
+            .hero { min-height: auto; padding: 24px 20px 34px; }
+            .hero-pills { height: 86px; }
+            .hero-pill.dot-a,
+            .hero-pill.dot-b { display: none; }
+            .hero-pill.right-a { right: 86px; top: 16px; width: 74px; height: 30px; }
+            .hero-pill.right-b { right: 54px; top: 18px; width: 52px; height: 24px; }
+            .hero-pill.right-c { right: 26px; top: 12px; width: 60px; height: 28px; }
+            .section-title, .schedule-item, .vitamin-summary, .search-box {
                 grid-template-columns: 1fr;
                 display: grid;
             }
+            .topbar {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
             .search-box button { width: 100%; }
-            .brand { max-width: none; }
+            .brand {
+                max-width: none;
+                min-width: 0;
+                font-size: 1.45rem;
+            }
+            #auth_topbar {
+                flex: 0 0 auto;
+            }
+            #auth_topbar .ghost-button,
+            #auth_topbar .button,
+            #auth_topbar .mini-pill {
+                padding: 11px 14px;
+                border-radius: 16px;
+                font-size: 0.88rem;
+                white-space: nowrap;
+            }
+            .auth-label-desktop {
+                display: none;
+            }
+            .auth-label-mobile {
+                display: inline;
+            }
             .hero-copy, .hero-stage { min-height: auto; }
-            .hero-copy h1 { max-width: 10ch; }
+            .hero-grid {
+                gap: 26px;
+            }
+            .hero-eyebrow { font-size: 0.8rem; margin-bottom: 12px; }
+            .hero-copy h1 {
+                max-width: 8ch;
+                font-size: clamp(3.1rem, 16vw, 4.15rem);
+                margin-bottom: 18px;
+            }
+            .hero-subline {
+                margin-top: -8px;
+                font-size: 1.02rem;
+            }
+            .hero-copy p {
+                max-width: 100%;
+                font-size: 1rem;
+            }
+            .hero-copy > .cta-row {
+                margin-top: 24px;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+                width: 100%;
+            }
+            .hero-copy > .cta-row .button,
+            .hero-copy > .cta-row .ghost-button {
+                width: 100%;
+                padding-inline: 12px;
+                font-size: 0.9rem;
+            }
+            .hero-trust {
+                margin-top: 22px;
+                gap: 8px;
+            }
+            .hero-trust-list {
+                gap: 8px;
+            }
+            .hero-trust-list span {
+                padding: 6px 9px;
+                font-size: 0.78rem;
+            }
+            .hero-feature-card {
+                padding: 20px;
+                gap: 14px;
+            }
+            .hero-upload-prompt {
+                padding: 16px;
+                gap: 14px;
+            }
+            .hero-upload-prompt strong {
+                font-size: 0.84rem;
+            }
+            .hero-start-list {
+                gap: 12px;
+            }
+            .hero-start-item {
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+            .hero-feature-card .cta-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .hero-links {
+                display: grid;
+                gap: 6px;
+            }
+            .hero-side-stack {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .section-mascot {
+                width: 62px;
+            }
+            .hero-stage {
+                margin-left: 0;
+            }
+            .hero-side-card {
+                padding: 16px;
+                gap: 10px;
+            }
+            .hero-stage .section-kicker h2 {
+                font-size: 0.92rem;
+            }
+            .mini-caption {
+                font-size: 0.82rem;
+                line-height: 1.45;
+            }
         }
     </style>
 </head>
@@ -1051,81 +1191,64 @@
     <main class="shell">
         <section class="hero" id="hero-top">
             <div class="hero-pills" aria-hidden="true">
-                <div class="hp hp-1"></div>
-                <div class="hp hp-2"></div>
-                <div class="hp hp-3"></div>
-                <div class="hp hp-4"></div>
-                <div class="hp hp-5"></div>
-                <div class="hp hp-6"></div>
-                <div class="hp hp-7"></div>
-                <div class="hp hp-8"></div>
-                <div class="hp hp-9"></div>
-                <div class="hp hp-10"></div>
+                <span class="hero-pill left-a"></span>
+                <span class="hero-pill left-b"></span>
+                <span class="hero-pill left-c"></span>
+                <span class="hero-pill dot-a"></span>
+                <span class="hero-pill dot-b"></span>
+                <span class="hero-pill right-a"></span>
+                <span class="hero-pill right-b"></span>
+                <span class="hero-pill right-c"></span>
             </div>
             <div class="topbar">
                 <a class="brand brand-link" href="/#hero-top">
-                    <span class="brand-word">Vitabit <span class="brand-pill" aria-hidden="true"></span></span>
+                    <span class="brand-word"><span class="brand-pill" aria-hidden="true"></span>Vitabit</span>
                 </a>
                 <div id="auth_topbar">
-                    <a class="ghost-button" href="/auth">Sign In / Log In</a>
+                    <a class="ghost-button" href="/auth"><span class="auth-label-desktop">Sign In / Log In</span><span class="auth-label-mobile">Sign In</span></a>
                 </div>
             </div>
 
             <div class="hero-grid">
                 <div class="hero-copy">
-                    <div class="hero-utility">
-                        <span class="hero-kicker">Tracker-first wellness support for supplements, meds, and meals.</span>
-                    </div>
-                    <h1>Build a routine you will actually remember.</h1>
+                    <div class="hero-eyebrow">Supplement tracking, simplified</div>
+                    <h1>Build a routine you'll <em>actually</em> remember.</h1>
+                    <div class="hero-subline">Your daily wellness buddy</div>
+                    <p>Profile-based tracking for up to 4 household members. Meal coverage estimated from what's already on your plate.</p>
                     <div class="cta-row">
                         <button type="button" class="button cta-link" onclick="openDetailSection('tracking-section')">Build Today’s Routine</button>
                         <button type="button" class="ghost-button cta-link" onclick="openDetailSection('meal-section')">Use Meal Analysis</button>
                     </div>
-                    <div class="hero-micro" aria-label="Tracked supplements">
-                        <span>Reminder-first</span>
-                        <span>Meals for support</span>
-                        <span>Coach on demand</span>
-                    </div>
-                    <div class="hero-trust" aria-label="Vitabit trust signals">
-                        <div class="hero-trust-title">Built to feel usable before it feels flashy.</div>
-                        <div class="hero-trust-list">
+                    <div class="hero-trust">
+                        <div class="hero-trust-list" aria-label="Vitabit trust signals">
                             <span>Profile-based tracking</span>
-                            <span>Meal coverage is estimated</span>
-                            <span>Not a diagnosis tool</span>
+                            <span>Up to 4 household profiles</span>
+                            <span>Meal coverage estimated</span>
                         </div>
                     </div>
-                    <p class="hero-support">Up to 4 profiles for you, kids, or pets.</p>
                 </div>
                 <div class="hero-stage">
                     <div class="hero-feature-card">
-                        <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Tracker-first setup</h2></div>
                         <div class="hero-upload-prompt">
-                            <div>
-                                <strong>Start with the routine you actually need to remember</strong>
-                                <p>Vitabit tracks supplements and medications first, then uses meal analysis and AI coaching as support.</p>
-                            </div>
+                            <strong>Start with your routine</strong>
                             <div class="hero-start-list">
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>One place for supplements, meds, and household profiles</span>
+                                    <span>Build one reminder list for the household</span>
                                 </div>
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>Meal coverage stays labeled as an estimate, not a diagnosis</span>
+                                    <span>Use meal analysis only when it helps</span>
                                 </div>
                                 <div class="hero-start-item">
                                     <span class="hero-start-dot" aria-hidden="true"></span>
-                                    <span>Use AI only when you want timing or gap help</span>
+                                    <span>Meal coverage is always an estimate</span>
                                 </div>
                             </div>
                         </div>
                         <div class="cta-row">
-                            <button type="button" class="button cta-link" onclick="openDetailSection('tracking-section')">Open Routine</button>
-                            <button type="button" class="ghost-button cta-link" onclick="openDetailSection('meal-section')">Open Meal Analysis</button>
-                        </div>
-                        <div class="hero-links">
-                            <a href="#" onclick="openDetailSection('coach-section'); return false;">Need timing help?</a>
-                            <a href="#" onclick="openDetailSection('search-section'); return false;">Looking for a supplement instead?</a>
+                            <button type="button" class="ghost-button cta-link" onclick="openDetailSection('tracking-section')">Open routine</button>
+                            <button type="button" class="ghost-button cta-link" onclick="openDetailSection('meal-section')">Open meal analysis</button>
                         </div>
                     </div>
                     <div class="hero-side-stack">
@@ -1138,6 +1261,10 @@
                             <p class="mini-caption">Ask only when you need timing, stacking, or gap support.</p>
                         </button>
                     </div>
+                    <div class="hero-links">
+                        <a href="#" onclick="openDetailSection('coach-section'); return false;">Need timing help?</a>
+                        <a href="#" onclick="openDetailSection('search-section'); return false;">Looking for a supplement instead?</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1148,7 +1275,6 @@
                     <div class="section-title">
                         <div>
                             <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today's Routine</h2></div>
-                            <p id="schedule_progress">Add your first reminder.</p>
                         </div>
                     </div>
 
@@ -1175,9 +1301,12 @@
 
                 <section class="card meal-primary detail-section is-hidden" id="meal-section">
                     <div class="section-title">
-                        <div>
+                        <div class="section-title-with-mascot">
+                            <div>
                             <div class="section-kicker"><span class="section-icon icon-meal" aria-hidden="true"></span><h2>Meal Photo Analysis</h2></div>
                             <p>Read what a meal likely covered before you add anything else.</p>
+                            </div>
+                            <img class="section-mascot" src="{{ url_for('static', filename='images/mascots/mascot-energy-2.png') }}" alt="Meal helper mascot">
                         </div>
                     </div>
 
@@ -1231,6 +1360,9 @@
                             <p>Search the shelf when you want to add something specific to a tracked routine.</p>
                         </div>
                     </div>
+                    <div class="catalog-mascot-strip" aria-label="Vitabit mascot helpers">
+                        <div class="catalog-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-focus-2.png') }}" alt="Shelf helper mascot"></div>
+                    </div>
                     <div class="search-box">
                         <input id="budget_input" type="text" placeholder="Search magnesium, probiotic, multivitamin, fish oil, prenatal...">
                         <button class="subtle-button" onclick="search()">Search</button>
@@ -1241,9 +1373,12 @@
 
                 <section class="card tool-card detail-section is-hidden" id="coach-section">
                     <div class="section-title">
-                        <div>
-                            <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Vitabit Coach</h2></div>
-                            <p>Ask when you need timing, stacking, or coverage help around your tracked routine.</p>
+                        <div class="section-title-with-mascot">
+                            <div>
+                                <div class="section-kicker"><span class="section-icon icon-coach" aria-hidden="true"></span><h2>Vitabit Coach</h2></div>
+                                <p>Ask when you need timing, stacking, or coverage help around your tracked routine.</p>
+                            </div>
+                            <img class="section-mascot" src="{{ url_for('static', filename='images/mascots/mascot-book.png') }}" alt="Coach helper mascot">
                         </div>
                     </div>
 
@@ -1262,6 +1397,7 @@
 
         <footer class="page-footer">
             Vitabit estimates coverage from meal photos, tracked supplement or medication routines, and official intake references such as NIH Office of Dietary Supplements guidance. For medication changes, diagnosis, or condition-specific guidance, consult a licensed clinician or pharmacist.
+            <br>&copy; 2026 Vitabit. All rights reserved.
         </footer>
     </main>
     <div class="toast-stack" id="toast_stack" aria-live="polite"></div>
@@ -1382,7 +1518,10 @@
                 : getSchedule();
             items = items.sort(function (a, b) { return a.time.localeCompare(b.time); });
             var completed = items.filter(function (item) { return item.completed; }).length;
-            $("#schedule_progress").text(items.length ? completed + " / " + items.length + " completed today" : "Start with one supplement reminder");
+            var progress = $("#schedule_progress");
+            if (progress.length) {
+                progress.text(items.length ? completed + " / " + items.length + " completed today" : "Start with one supplement reminder");
+            }
 
             if (!items.length) {
                 $("#schedule_list").html("<li class='empty-state'>Nothing scheduled yet. Add one routine and let Vitabit keep the rest in view.</li>");
@@ -1577,7 +1716,7 @@
         function renderAccountPanel() {
             var panel = $("#account_panel");
             if (!authState.authenticated) {
-                $("#auth_topbar").html('<a class="ghost-button" href="/auth">Sign In / Log In</a>');
+                $("#auth_topbar").html('<a class="ghost-button" href="/auth"><span class="auth-label-desktop">Sign In / Log In</span><span class="auth-label-mobile">Sign In</span></a>');
                 if (panel.length) {
                     panel.html(`
                         <div class="empty-state">

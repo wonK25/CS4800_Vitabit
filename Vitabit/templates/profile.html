@@ -72,6 +72,7 @@
         .hero { margin-bottom: 20px; }
         .topbar, .section-title, .profile-chip, .tracked-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         .topbar, .section-title { flex-wrap: wrap; }
+        .profile-hero-mascot { width: 78px; height: auto; display: block; flex: 0 0 auto; }
         .layout { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 20px; align-items: start; }
         .column, .stack, .profile-list, .tracked-items-list, #meal_history, #dashboard_summary { display: grid; gap: 12px; }
 
@@ -260,6 +261,7 @@
         @media (max-width: 980px) {
             .layout { grid-template-columns: 1fr; }
             .inline-grid { grid-template-columns: 1fr; }
+            .profile-hero-mascot { width: 64px; }
         }
     </style>
 </head>
@@ -278,6 +280,7 @@
                     <h1>Manage your household wellness</h1>
                     <p>Edit profile details, switch family members, manage supplement and medication routines, and review recent meal trends.</p>
                 </div>
+                <img class="profile-hero-mascot" src="{{ url_for('static', filename='images/mascots/mascot-hydration-2.png') }}" alt="Profile helper mascot">
                 <a class="ghost-button" href="/">Back to Home</a>
             </div>
         </section>
@@ -314,12 +317,13 @@
                                     <input id="profile_age" type="number" min="0" placeholder="Age">
                                 </div>
                                 <div class="inline-grid">
-                                    <input id="profile_height_value" type="number" min="0" step="0.1" placeholder="Height">
+                                    <input id="profile_height_value" type="text" inputmode="decimal" placeholder="e.g. 170 or 5'5&quot;">
                                     <select id="profile_height_unit">
                                         <option value="cm">cm</option>
-                                        <option value="in">in</option>
+                                        <option value="ft_in">ft/in</option>
                                     </select>
                                 </div>
+                                <div class="field-hint">Use `ft/in` for heights like `5'5"`.</div>
                                 <div class="inline-grid">
                                     <input id="profile_weight_value" type="number" min="0" step="0.1" placeholder="Weight">
                                     <select id="profile_weight_unit">
@@ -402,8 +406,17 @@
             return $("<div>").text(text || "").html();
         }
 
+        function formatFeetInchesDisplay(value) {
+            var parsed = parseFeetInches(value);
+            if (!parsed) return value;
+            return parsed.feet + "'" + parsed.inches + '"';
+        }
+
         function toDisplayHeight(profile) {
             if (profile.height_value && profile.height_unit) {
+                if (profile.height_unit === "ft_in") {
+                    return formatFeetInchesDisplay(profile.height_value);
+                }
                 return profile.height_value + " " + profile.height_unit;
             }
             if (profile.height_cm) {
@@ -422,7 +435,37 @@
             return "";
         }
 
+        function parseFeetInches(value) {
+            var raw = (value || "").trim().toLowerCase();
+            if (!raw) return null;
+
+            var pairMatch = raw.match(/^(\d+)\s+(\d+(?:\.\d+)?)$/);
+            if (pairMatch) {
+                var pairFeet = parseInt(pairMatch[1], 10);
+                var pairInches = parseFloat(pairMatch[2]);
+                if (pairInches >= 12) return null;
+                return { feet: pairFeet, inches: pairInches };
+            }
+
+            var normalized = raw
+                .replace(/feet|foot|ft/g, "'")
+                .replace(/inches|inch|in/g, '"')
+                .replace(/\s+/g, "");
+            var match = normalized.match(/^(\d+)'(\d+(?:\.\d+)?)?"?$/);
+            if (!match) return null;
+
+            var feet = parseInt(match[1], 10);
+            var inches = parseFloat(match[2] || "0");
+            if (inches >= 12) return null;
+            return { feet: feet, inches: inches };
+        }
+
         function normalizeHeight(value, unit) {
+            if (unit === "ft_in") {
+                var parsed = parseFeetInches(value);
+                if (!parsed) return "";
+                return ((parsed.feet * 12 + parsed.inches) * 2.54).toFixed(1);
+            }
             var numeric = parseFloat(value);
             if (!numeric || numeric <= 0) return "";
             if (unit === "in") {
@@ -620,6 +663,11 @@
             var heightUnit = $("#profile_height_unit").val();
             var weightValue = $("#profile_weight_value").val().trim();
             var weightUnit = $("#profile_weight_unit").val();
+            var normalizedHeight = normalizeHeight(heightValue, heightUnit);
+            if (heightValue && !normalizedHeight) {
+                alert(heightUnit === "ft_in" ? "Enter height like 5'5\" for ft/in." : "Enter a valid height.");
+                return;
+            }
             var payload = {
                 name: $("#profile_name").val().trim(),
                 relationship: $("#profile_relationship").val().trim(),
@@ -627,7 +675,7 @@
                 age: $("#profile_age").val().trim(),
                 height_value: heightValue,
                 height_unit: heightUnit,
-                height_cm: normalizeHeight(heightValue, heightUnit),
+                height_cm: normalizedHeight,
                 weight_value: weightValue,
                 weight_unit: weightUnit,
                 weight_kg: normalizeWeight(weightValue, weightUnit),

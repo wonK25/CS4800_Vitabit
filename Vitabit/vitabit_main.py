@@ -89,6 +89,67 @@ def today_key():
     return datetime.now().strftime("%Y-%m-%d")
 
 
+def parse_feet_inches(height_value):
+    raw = (height_value or "").strip().lower()
+    if not raw:
+        return None
+
+    pair_match = re.fullmatch(r"(\d+)\s+(\d+(?:\.\d+)?)", raw)
+    if pair_match:
+        feet = int(pair_match.group(1))
+        inches = float(pair_match.group(2))
+        if inches >= 12:
+            return None
+        return feet, inches
+
+    normalized = re.sub(r"feet|foot|ft", "'", raw)
+    normalized = re.sub(r"inches|inch|in", '"', normalized)
+    normalized = re.sub(r"\s+", "", normalized)
+    match = re.fullmatch(r"(\d+)'(\d+(?:\.\d+)?)?\"?", normalized)
+    if not match:
+        return None
+
+    feet = int(match.group(1))
+    inches = float(match.group(2) or "0")
+    if inches >= 12:
+        return None
+    return feet, inches
+
+
+def normalize_height_cm(height_value, height_unit, fallback_cm=""):
+    unit = (height_unit or "").strip()
+    value = (height_value or "").strip()
+    if unit == "ft_in":
+        parsed = parse_feet_inches(value)
+        if not parsed:
+            return ""
+        feet, inches = parsed
+        return f"{((feet * 12 + inches) * 2.54):.1f}"
+    if unit == "in":
+        try:
+            numeric = float(value)
+        except ValueError:
+            return ""
+        return f"{(numeric * 2.54):.1f}" if numeric > 0 else ""
+    if unit == "cm":
+        return value
+    return (fallback_cm or "").strip()
+
+
+def normalize_weight_kg(weight_value, weight_unit, fallback_kg=""):
+    unit = (weight_unit or "").strip()
+    value = (weight_value or "").strip()
+    if unit == "lb":
+        try:
+            numeric = float(value)
+        except ValueError:
+            return ""
+        return f"{(numeric * 0.45359237):.1f}" if numeric > 0 else ""
+    if unit == "kg":
+        return value
+    return (fallback_kg or "").strip()
+
+
 def is_onboarding_complete(user):
     return bool(user.get("onboarding_completed"))
 
@@ -437,7 +498,11 @@ def ensure_default_profile(user_id, email):
         "sex": "",
         "age": "",
         "height_cm": "",
+        "height_value": "",
+        "height_unit": "",
         "weight_kg": "",
+        "weight_value": "",
+        "weight_unit": "",
         "wellness_goal": "",
         "diet_style": "",
         "is_primary": True,
@@ -567,8 +632,12 @@ def complete_onboarding():
     if not skip:
         sex = (request.form.get("sex") or "").strip()
         age = (request.form.get("age") or "").strip()
-        height_cm = (request.form.get("height_cm") or "").strip()
-        weight_kg = (request.form.get("weight_kg") or "").strip()
+        height_value = (request.form.get("height_value") or "").strip()
+        height_unit = (request.form.get("height_unit") or "").strip()
+        height_cm = normalize_height_cm(height_value, height_unit, request.form.get("height_cm"))
+        weight_value = (request.form.get("weight_value") or "").strip()
+        weight_unit = (request.form.get("weight_unit") or "").strip()
+        weight_kg = normalize_weight_kg(weight_value, weight_unit, request.form.get("weight_kg"))
 
         profiles_collection.update_one(
             {"_id": profile["_id"], "user_id": user["_id"]},
@@ -577,7 +646,11 @@ def complete_onboarding():
                     "sex": sex,
                     "age": age,
                     "height_cm": height_cm,
+                    "height_value": height_value,
+                    "height_unit": height_unit,
                     "weight_kg": weight_kg,
+                    "weight_value": weight_value,
+                    "weight_unit": weight_unit,
                     "updated_at": utcnow(),
                 }
             },
@@ -731,6 +804,9 @@ def create_profile(user):
     wellness_goal = (payload.get("wellness_goal") or "").strip()
     diet_style = (payload.get("diet_style") or "").strip()
 
+    normalized_height_cm = normalize_height_cm(height_value, height_unit, height_cm)
+    normalized_weight_kg = normalize_weight_kg(weight_value, weight_unit, weight_kg)
+
     if not name:
         return jsonify({"error": "Profile name is required."}), 400
 
@@ -744,10 +820,10 @@ def create_profile(user):
         "relationship": relationship or "Household",
         "sex": sex,
         "age": age,
-        "height_cm": height_cm,
+        "height_cm": normalized_height_cm,
         "height_value": height_value,
         "height_unit": height_unit,
-        "weight_kg": weight_kg,
+        "weight_kg": normalized_weight_kg,
         "weight_value": weight_value,
         "weight_unit": weight_unit,
         "wellness_goal": wellness_goal,
@@ -797,6 +873,19 @@ def update_profile(user, profile_id):
     for field in allowed_fields:
         if field in payload:
             updates[field] = (payload.get(field) or "").strip()
+
+    if "height_value" in payload or "height_unit" in payload or "height_cm" in payload:
+        updates["height_cm"] = normalize_height_cm(
+            payload.get("height_value", updates.get("height_value", profile.get("height_value", ""))),
+            payload.get("height_unit", updates.get("height_unit", profile.get("height_unit", ""))),
+            payload.get("height_cm", updates.get("height_cm", profile.get("height_cm", ""))),
+        )
+    if "weight_value" in payload or "weight_unit" in payload or "weight_kg" in payload:
+        updates["weight_kg"] = normalize_weight_kg(
+            payload.get("weight_value", updates.get("weight_value", profile.get("weight_value", ""))),
+            payload.get("weight_unit", updates.get("weight_unit", profile.get("weight_unit", ""))),
+            payload.get("weight_kg", updates.get("weight_kg", profile.get("weight_kg", ""))),
+        )
 
     if not updates:
         return jsonify({"error": "No profile updates provided."}), 400
