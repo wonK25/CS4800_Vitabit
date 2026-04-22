@@ -544,6 +544,9 @@
             font-weight: 700;
             font-size: 0.95rem;
             transition: transform 0.18s ease, box-shadow 0.18s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .button, .search-box button, .chat-input button, .planner-form button, .upload-form button {
@@ -570,6 +573,23 @@
             background: rgba(255, 255, 255, 0.96);
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
+        }
+
+        .ghost-button:active,
+        .ghost-button:focus,
+        .ghost-button:focus-visible {
+            background: rgba(255, 255, 255, 0.96);
+            color: var(--ink);
+            border-color: rgba(31, 42, 29, 0.18);
+            box-shadow: var(--shadow-sm);
+            outline: none;
+        }
+
+        .button:active,
+        .button:focus,
+        .button:focus-visible {
+            color: white;
+            outline: none;
         }
 
         .cta-link {
@@ -1273,8 +1293,11 @@
             <div class="workspace">
                 <section class="card tool-card detail-section" id="tracking-section">
                     <div class="section-title">
-                        <div>
-                            <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today's Routine</h2></div>
+                        <div class="section-title-with-mascot">
+                            <div>
+                                <div class="section-kicker"><span class="section-icon icon-routine" aria-hidden="true"></span><h2>Today's Routine</h2></div>
+                            </div>
+                            <img class="section-mascot" src="{{ url_for('static', filename='images/mascots/mascot-wave.png') }}" alt="Routine helper mascot">
                         </div>
                     </div>
 
