@@ -335,6 +335,66 @@
             .profile-hero-heading { align-items: center; }
             .auth-topbar-actions { justify-content: flex-start; }
         }
+
+        @media (max-width: 720px) {
+            .shell {
+                width: min(100% - 18px, 1200px);
+                margin: 18px auto 32px;
+            }
+
+            .hero, .card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            .hero {
+                padding-top: 24px;
+                padding-bottom: 18px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: var(--space-3);
+            }
+
+            #auth_topbar,
+            .auth-topbar-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .auth-topbar-actions {
+                display: grid;
+                grid-template-columns: 54px minmax(0, 1fr) minmax(0, 1fr);
+                align-items: center;
+                gap: var(--space-2);
+            }
+
+            .auth-topbar-actions .mini-pill {
+                grid-column: 2 / 4;
+                width: 100%;
+            }
+
+            .auth-topbar-actions > .ghost-button {
+                grid-column: 2;
+            }
+
+            .auth-topbar-actions form {
+                grid-column: 3;
+                width: 100%;
+                margin: 0;
+            }
+
+            .auth-topbar-actions .ghost-button,
+            .auth-topbar-actions form .ghost-button {
+                min-width: 0;
+                width: 100%;
+            }
+
+            .profile-hero-layout {
+                margin-top: var(--space-2);
+            }
+        }
     </style>
 </head>
 <body>
@@ -636,7 +696,7 @@
 
             $("#auth_topbar").html(`
                 <div class="auth-topbar-actions">
-                    <img class="auth-topbar-mascot" src="{{ url_for('static', filename='images/mascots/mascot-hydration-2.png') }}" alt="Profile helper mascot">
+                    <img class="auth-topbar-mascot" src="{{ url_for('static', filename='images/mascots/mascot-hydration-full.png') }}" alt="Profile helper mascot">
                     <span class="mini-pill">${safeHtml(authState.user.email)}</span>
                     <a class="ghost-button" href="/">Back to Home</a>
                     <form method="post" action="/auth/logout" style="margin:0;">

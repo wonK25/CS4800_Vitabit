@@ -119,6 +119,15 @@
             min-width: 0;
         }
 
+        .auth-topbar-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
         .auth-label-mobile {
             display: none;
         }
@@ -279,7 +288,7 @@
             font-size: clamp(3.5rem, 6.4vw, 5rem);
             line-height: 0.96;
             letter-spacing: -0.05em;
-            margin: 0 0 26px;
+            margin: 0 0 var(--space-4);
             max-width: 9ch;
             text-align: left;
             font-weight: 900;
@@ -342,11 +351,11 @@
 
         .hero-stage {
             display: grid;
-            gap: 18px;
+            gap: var(--space-3);
             align-content: stretch;
             min-height: 540px;
-            margin-left: -18px;
-            margin-top: 16px;
+            margin-left: -16px;
+            margin-top: var(--space-3);
             position: relative;
             z-index: 2;
         }
@@ -402,17 +411,17 @@
         }
 
         .hero-feature-card {
-            padding: 28px;
+            padding: var(--space-4);
             display: grid;
-            gap: 18px;
+            gap: var(--space-3);
             min-height: 0;
             background: linear-gradient(180deg, rgba(252, 254, 255, 0.92), rgba(248, 252, 255, 0.88));
         }
 
         .hero-side-card {
-            padding: 22px;
+            padding: var(--space-4);
             display: grid;
-            gap: 12px;
+            gap: var(--space-2);
         }
 
         .hero-tool-trigger {
@@ -431,7 +440,7 @@
         .hero-side-stack {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            gap: var(--space-3);
         }
 
         .hero-stage .section-kicker h2 {
@@ -443,7 +452,7 @@
 
         .hero-upload-prompt {
             display: grid;
-            gap: 16px;
+            gap: var(--space-3);
             text-align: left;
             min-height: 0;
             padding: 0;
@@ -464,14 +473,14 @@
 
         .hero-start-list {
             display: grid;
-            gap: 14px;
+            gap: var(--space-2);
             margin-top: 0;
         }
 
         .hero-start-item {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 14px;
+            gap: var(--space-2);
             align-items: start;
         }
 
@@ -495,7 +504,7 @@
             margin-top: 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: var(--space-2);
         }
 
         .hero-feature-card .ghost-button {
@@ -520,7 +529,7 @@
         }
 
         .hero-links {
-            gap: 10px;
+            gap: var(--space-2);
             align-items: center;
         }
 
@@ -552,7 +561,7 @@
             font-weight: 600;
             background: var(--accent-soft);
             color: var(--accent);
-            margin-bottom: 10px;
+            margin-bottom: var(--space-1);
         }
 
         .hero-panel {
@@ -650,9 +659,9 @@
         .pill-badges {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: var(--space-2);
             justify-content: center;
-            margin-top: 28px;
+            margin-top: var(--space-4);
         }
 
         .pill-badge {
@@ -698,14 +707,14 @@
         .meal-upload-grid {
             display: grid;
             grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
-            gap: 18px;
+            gap: var(--space-3);
             align-items: start;
         }
 
         .meal-dropzone {
             display: grid;
-            gap: 14px;
-            padding: 18px;
+            gap: var(--space-2);
+            padding: var(--space-3);
             border-radius: 24px;
             border: 1.5px dashed rgba(30, 107, 82, 0.18);
             background:
@@ -722,13 +731,13 @@
         }
 
         .tool-card {
-            padding: 22px;
+            padding: var(--space-4);
         }
 
         .catalog-mascot-strip {
             display: flex;
             justify-content: center;
-            margin-bottom: 14px;
+            margin-bottom: var(--space-3);
         }
 
         .catalog-mascot {
@@ -844,7 +853,7 @@
             gap: 14px;
         }
 
-        .vitamin-card, .chat-card { padding: 18px; }
+        .vitamin-card, .chat-card { padding: var(--space-3); }
         .vitamin-summary { display: flex; gap: 16px; align-items: flex-start; }
         .vitamin-card img {
             width: 72px;
@@ -857,7 +866,7 @@
 
         .vitamin-info { flex: 1; }
         .vitamin-info h3 { font-size: 1.1rem; margin-bottom: 8px; }
-        .how-to-take { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: none; }
+        .how-to-take { margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--line); display: none; }
         .vitamin-card.open .how-to-take { display: block; }
 
         .planner-form, .upload-form, .chat-input, .analysis-grid, .column, .stack-form {
@@ -922,7 +931,7 @@
         }
 
         .history-card {
-            padding: 14px;
+            padding: var(--space-3);
             border-radius: 18px;
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.76);
@@ -958,9 +967,9 @@
         .reminder-tools {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-2);
             flex-wrap: wrap;
-            margin: 8px 0 18px;
+            margin: var(--space-1) 0 var(--space-3);
         }
 
         .toast-stack {
@@ -1012,7 +1021,7 @@
             border: 1px solid var(--line);
         }
 
-        .box h4 { margin-bottom: 10px; }
+        .box h4 { margin-bottom: var(--space-1); }
         .analysis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .analysis-grid .box:first-child { grid-column: 1 / -1; }
         .list-clean {
@@ -1045,17 +1054,17 @@
         .empty-state {
             border: 1px dashed var(--line);
             border-radius: 20px;
-            padding: 18px;
+            padding: var(--space-3);
             color: var(--muted);
             background: rgba(255, 255, 255, 0.5);
         }
 
         #schedule_list {
-            margin-top: 10px;
+            margin-top: var(--space-2);
         }
 
         .chat-feed {
-            margin-top: 10px;
+            margin-top: var(--space-2);
             margin-bottom: 12px;
         }
 
@@ -1064,7 +1073,7 @@
         }
 
         .chat-input textarea {
-            margin-top: 10px;
+            margin-top: var(--space-2);
         }
 
         #search-section .section-title,
@@ -1082,8 +1091,8 @@
         }
 
         .page-footer {
-            margin-top: 20px;
-            padding: 18px 4px 0;
+            margin-top: var(--space-4);
+            padding: var(--space-3) 4px 0;
             color: var(--muted);
             font-size: 0.92rem;
         }
@@ -1111,6 +1120,22 @@
             .split-grid { grid-template-columns: 1fr; }
             .hero-side-stack, .meal-upload-grid { grid-template-columns: 1fr; }
             .analysis-grid { grid-template-columns: 1fr; }
+            .topbar {
+                align-items: flex-start;
+                gap: var(--space-3);
+            }
+            #auth_topbar {
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+            }
+            .hero-stage {
+                margin-left: 0;
+            }
+            .hero-top-mascots {
+                left: 180px;
+                right: 180px;
+            }
         }
 
         @media (max-width: 640px) {
@@ -1123,9 +1148,9 @@
             }
             .topbar {
                 display: flex;
-                flex-wrap: nowrap;
-                align-items: center;
-                justify-content: space-between;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                justify-content: flex-start;
                 gap: 12px;
             }
             .search-box button { width: 100%; }
@@ -1135,7 +1160,17 @@
                 font-size: 1.45rem;
             }
             #auth_topbar {
-                flex: 0 0 auto;
+                flex: 1 1 100%;
+                width: 100%;
+            }
+            #auth_topbar > div {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                width: 100%;
+            }
+            #auth_topbar form {
+                margin: 0;
             }
             #auth_topbar .ghost-button,
             #auth_topbar .button,
@@ -1144,6 +1179,16 @@
                 border-radius: 16px;
                 font-size: 0.88rem;
                 white-space: nowrap;
+            }
+            #auth_topbar > div .ghost-button,
+            #auth_topbar > div form {
+                width: 100%;
+            }
+            #auth_topbar .ghost-button,
+            #auth_topbar .button {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
             }
             .auth-label-desktop {
                 display: none;
@@ -1264,22 +1309,22 @@
 
             <div class="hero-top-mascots" aria-hidden="true">
                 <div class="hero-top-mascot focus">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-focus-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-focus-face.png') }}" alt="">
                 </div>
                 <div class="hero-top-mascot hydration">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-hydration-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-hydration-face.png') }}" alt="">
                 </div>
                 <div class="hero-top-mascot energy">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-energy-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-energy-face.png') }}" alt="">
                 </div>
                 <div class="hero-top-mascot sleep">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-sleep-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-sleep-face.png') }}" alt="">
                 </div>
                 <div class="hero-top-mascot mood">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-mood-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-mood-face.png') }}" alt="">
                 </div>
                 <div class="hero-top-mascot immunity">
-                    <img src="{{ url_for('static', filename='images/mascots/mascot-immunity-1.png') }}" alt="">
+                    <img src="{{ url_for('static', filename='images/mascots/mascot-immunity-face.png') }}" alt="">
                 </div>
             </div>
 
@@ -1382,7 +1427,7 @@
                             <div class="section-kicker"><span class="section-icon icon-meal" aria-hidden="true"></span><h2>Meal Photo Analysis</h2></div>
                             <p>Read what a meal likely covered before you add anything else.</p>
                             </div>
-                            <img class="section-mascot" src="{{ url_for('static', filename='images/mascots/mascot-energy-2.png') }}" alt="Meal helper mascot">
+                            <img class="section-mascot" src="{{ url_for('static', filename='images/mascots/mascot-energy-full.png') }}" alt="Meal helper mascot">
                         </div>
                     </div>
 
@@ -1437,7 +1482,7 @@
                         </div>
                     </div>
                     <div class="catalog-mascot-strip" aria-label="Vitabit mascot helpers">
-                        <div class="catalog-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-focus-2.png') }}" alt="Shelf helper mascot"></div>
+                        <div class="catalog-mascot"><img src="{{ url_for('static', filename='images/mascots/mascot-focus-full.png') }}" alt="Shelf helper mascot"></div>
                     </div>
                     <div class="search-box">
                         <input id="budget_input" type="text" placeholder="Search magnesium, probiotic, multivitamin, fish oil, prenatal...">
@@ -1807,7 +1852,7 @@
             }
 
             $("#auth_topbar").html(`
-                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <div class="auth-topbar-actions">
                     <a class="ghost-button" href="/profile" style="text-decoration:none;">Profile</a>
                     <form method="post" action="/auth/logout" style="margin:0;">
                         <button class="ghost-button" type="submit">Log Out</button>

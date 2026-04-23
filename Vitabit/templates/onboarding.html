@@ -110,6 +110,12 @@
             margin-top: var(--space-3);
         }
 
+        .unit-field {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+        }
+
         button {
             border: none;
             border-radius: 18px;
@@ -132,8 +138,31 @@
         }
 
         @media (max-width: 720px) {
+            body {
+                padding: 18px;
+            }
+
+            .card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
             .grid {
                 grid-template-columns: 1fr;
+            }
+
+            .unit-field,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                display: grid;
+            }
+
+            .actions button,
+            .actions .ghost {
+                width: 100%;
             }
         }
     </style>
@@ -160,7 +189,7 @@
                 </label>
                 <label>
                     Height
-                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;">
+                    <div class="unit-field">
                         <input type="text" inputmode="decimal" name="height_value" placeholder="e.g. 170 or 5'5&quot;">
                         <select name="height_unit">
                             <option value="cm">cm</option>
@@ -170,7 +199,7 @@
                 </label>
                 <label>
                     Weight
-                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;">
+                    <div class="unit-field">
                         <input type="number" min="0" step="0.1" name="weight_value" placeholder="e.g. 65 or 145">
                         <select name="weight_unit">
                             <option value="kg">kg</option>
