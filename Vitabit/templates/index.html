@@ -733,10 +733,14 @@
 
         .meal-dropzone-copy,
         .meal-dropzone-copy p {
+            display: block;
+            width: 100%;
             min-width: 0;
             max-width: 100%;
+            white-space: normal;
             overflow-wrap: anywhere;
             word-break: break-word;
+            overflow: hidden;
         }
 
         .tool-card {
@@ -1325,6 +1329,25 @@
             .split-grid { grid-template-columns: 1fr; }
             .hero-side-stack, .meal-upload-grid { grid-template-columns: 1fr; }
             .analysis-grid { grid-template-columns: 1fr; }
+            .section-title,
+            .section-title-with-mascot,
+            .section-title-with-mascot > div,
+            .meal-dropzone-copy,
+            .meal-dropzone-copy p,
+            .upload-form,
+            .upload-form p,
+            .box,
+            .box p,
+            .empty-state,
+            .status-text,
+            .footnote,
+            .page-footer,
+            .brand-copy {
+                min-width: 0;
+                max-width: 100%;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
             .section-title-with-mascot {
                 align-items: flex-start;
             }
