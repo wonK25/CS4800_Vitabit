@@ -802,12 +802,78 @@
             background: rgba(30, 107, 82, 0.14);
         }
 
-        .catalog-time-input {
+        .time-picker {
+            position: relative;
+            min-width: 180px;
+        }
+
+        .time-picker-shell {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.84);
             border-radius: 14px;
-            padding: 10px 12px;
             color: var(--ink);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .time-picker-shell:hover {
+            border-color: rgba(47, 123, 127, 0.3);
+        }
+
+        .time-picker-shell:focus-within {
+            outline: 2px solid rgba(108, 149, 207, 0.45);
+            outline-offset: 2px;
+        }
+
+        .time-picker-display {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 13px 14px;
+            pointer-events: none;
+        }
+
+        .time-picker-label {
+            color: var(--ink);
+            font: inherit;
+        }
+
+        .time-picker-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            color: transparent;
+            opacity: 0;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .time-picker-input::-webkit-calendar-picker-indicator {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+        .time-picker-icon {
+            flex: 0 0 auto;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        .action-inline .time-picker {
+            flex: 0 0 180px;
         }
 
         .detail-section {
@@ -973,6 +1039,32 @@
             margin: var(--space-1) 0 var(--space-3);
         }
 
+        .reminder-settings {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-3);
+        }
+
+        .reminder-setting {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.76);
+            color: var(--ink);
+        }
+
+        .reminder-setting input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: var(--accent);
+        }
+
         .toast-stack {
             position: fixed;
             right: 20px;
@@ -993,6 +1085,11 @@
             pointer-events: auto;
         }
 
+        .toast.is-persistent {
+            border-color: rgba(47, 123, 127, 0.28);
+            box-shadow: 0 20px 50px rgba(31, 42, 29, 0.18);
+        }
+
         .toast strong {
             display: block;
             margin-bottom: 4px;
@@ -1002,6 +1099,24 @@
         .toast p {
             margin: 0;
             font-size: 0.94rem;
+        }
+
+        .toast button {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: rgba(47, 123, 127, 0.12);
+            color: var(--accent);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .toast-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
         }
 
         .chat-feed { max-height: 440px; overflow-y: auto; padding-right: 4px; }
@@ -1404,10 +1519,28 @@
                         <button type="button" class="ghost-button" id="enable_notifications">Enable Reminder Alerts</button>
                         <span class="mini-pill" id="notification_state">Browser alerts off</span>
                     </div>
+                    <div class="reminder-settings">
+                        <label class="reminder-setting" for="sound_enabled">
+                            <input id="sound_enabled" type="checkbox" checked>
+                            <span>Reminder sound</span>
+                        </label>
+                        <label class="reminder-setting" for="vibration_enabled">
+                            <input id="vibration_enabled" type="checkbox" checked>
+                            <span>Vibration</span>
+                        </label>
+                    </div>
 
                     <form class="planner-form" id="quick_add_form">
                         <input id="quick_name" type="text" placeholder="Add vitamin or medication">
-                        <input id="quick_time" type="time" value="08:00">
+                        <div class="time-picker" data-time-picker>
+                            <div class="time-picker-shell" role="button" tabindex="0" aria-label="Open time picker">
+                                <div class="time-picker-display">
+                                    <span class="time-picker-label">08:00 AM</span>
+                                    <span class="time-picker-icon" aria-hidden="true">&#128339;</span>
+                                </div>
+                                <input id="quick_time" class="time-picker-input" type="time" value="08:00">
+                            </div>
+                        </div>
                         <button type="submit" class="subtle-button">Add Reminder</button>
                     </form>
 
@@ -1526,8 +1659,10 @@
     <script>
         const SCHEDULE_KEY = "vitabit-schedule-v1";
         const REMINDER_LOG_KEY = "vitabit-reminder-log-v1";
+        const REMINDER_SETTINGS_KEY = "vitabit-reminder-settings-v1";
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
         let reminderTimer = null;
+        let audioContext = null;
 
         function trackEvent(eventName, params) {
             if (typeof gtag !== "function") return;
@@ -1542,6 +1677,71 @@
 
         function safeHtml(text) {
             return $("<div>").text(text || "").html();
+        }
+
+        function renderTimePickerMarkup(value, inputClass) {
+            var safeValue = /^([01]\d|2[0-3]):([0-5]\d)$/.test(value || "") ? value : "08:00";
+            return `
+                <div class="time-picker" data-time-picker>
+                    <div class="time-picker-shell" role="button" tabindex="0" aria-label="Open time picker" onclick="openTimePicker(this)" onkeydown="handleTimePickerKeydown(event, this)">
+                        <div class="time-picker-display">
+                            <span class="time-picker-label">${formatTimeLabel(safeValue)}</span>
+                            <span class="time-picker-icon" aria-hidden="true">&#128339;</span>
+                        </div>
+                        <input class="time-picker-input ${inputClass || ""}" type="time" value="${safeValue}">
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatTimeLabel(value) {
+            var safeValue = /^([01]\d|2[0-3]):([0-5]\d)$/.test(value || "") ? value : "08:00";
+            var parts = safeValue.split(":");
+            var hour24 = parseInt(parts[0], 10);
+            var minute = parts[1];
+            var period = hour24 >= 12 ? "PM" : "AM";
+            var hour12 = hour24 % 12 || 12;
+            return String(hour12).padStart(2, "0") + ":" + minute + " " + period;
+        }
+
+        function showNativeTimePicker(input, shouldFocus) {
+            if (!input) {
+                return;
+            }
+            if (shouldFocus !== false) {
+                input.focus();
+            }
+            if (typeof input.showPicker === "function") {
+                try {
+                    input.showPicker();
+                } catch (error) {}
+            } else {
+                if (shouldFocus === false) {
+                    input.click();
+                }
+            }
+        }
+
+        function openTimePicker(target) {
+            var input = $(target).closest(".time-picker").find(".time-picker-input")[0];
+            showNativeTimePicker(input, true);
+        }
+
+        function openTimePickerInput(input) {
+            showNativeTimePicker(input, false);
+        }
+
+        function handleTimePickerKeydown(event, target) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openTimePicker(target);
+            }
+        }
+
+        function syncTimePickerLabel(input) {
+            var field = $(input);
+            var value = field.val() || "08:00";
+            field.closest(".time-picker-shell").find(".time-picker-label").text(formatTimeLabel(value));
         }
 
         function getSchedule() {
@@ -1566,6 +1766,78 @@
 
         function setReminderLog(value) {
             localStorage.setItem(REMINDER_LOG_KEY, JSON.stringify(value));
+        }
+
+        function todayKeyLocal() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, "0");
+            var day = String(now.getDate()).padStart(2, "0");
+            return year + "-" + month + "-" + day;
+        }
+
+        function getReminderSettings() {
+            try {
+                var parsed = JSON.parse(localStorage.getItem(REMINDER_SETTINGS_KEY) || "{}");
+                return {
+                    sound: parsed.sound !== false,
+                    vibration: parsed.vibration !== false
+                };
+            } catch (error) {
+                return { sound: true, vibration: true };
+            }
+        }
+
+        function setReminderSettings(nextSettings) {
+            localStorage.setItem(REMINDER_SETTINGS_KEY, JSON.stringify(nextSettings));
+        }
+
+        function syncReminderSettingsUi() {
+            var settings = getReminderSettings();
+            $("#sound_enabled").prop("checked", settings.sound);
+            $("#vibration_enabled").prop("checked", settings.vibration);
+        }
+
+        function ensureAudioReady() {
+            if (!window.AudioContext && !window.webkitAudioContext) {
+                return null;
+            }
+            if (!audioContext) {
+                var AudioCtor = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioCtor();
+            }
+            if (audioContext.state === "suspended") {
+                audioContext.resume().catch(function () {});
+            }
+            return audioContext;
+        }
+
+        function playReminderSound() {
+            if (!getReminderSettings().sound) {
+                return;
+            }
+            var context = ensureAudioReady();
+            if (!context) {
+                return;
+            }
+            var startAt = context.currentTime + 0.01;
+            [0, 0.18].forEach(function (offset, index) {
+                var oscillator = context.createOscillator();
+                var gain = context.createGain();
+                oscillator.type = "sine";
+                oscillator.frequency.value = index === 0 ? 880 : 660;
+                gain.gain.setValueAtTime(0.0001, startAt + offset);
+                gain.gain.exponentialRampToValueAtTime(0.08, startAt + offset + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startAt + offset + 0.14);
+                oscillator.connect(gain);
+                gain.connect(context.destination);
+                oscillator.start(startAt + offset);
+                oscillator.stop(startAt + offset + 0.16);
+            });
+        }
+
+        function getLocalCompletion(item) {
+            return !!(item && item.completed_date === todayKeyLocal());
         }
 
         function openDetailSection(sectionId) {
@@ -1604,6 +1876,7 @@
             var next = getSchedule().map(function (item) {
                 if (item.id === id) {
                     item.completed = checked;
+                    item.completed_date = checked ? todayKeyLocal() : null;
                 }
                 return item;
             });
@@ -1617,7 +1890,13 @@
                 return;
             }
             var schedule = getSchedule();
-            schedule.push({ id: Date.now().toString() + Math.random().toString(16).slice(2), name: name, time: time || "08:00", completed: false });
+            schedule.push({
+                id: Date.now().toString() + Math.random().toString(16).slice(2),
+                name: name,
+                time: time || "08:00",
+                completed: false,
+                completed_date: null
+            });
             setSchedule(schedule);
             trackEvent("local_reminder_added", {
                 item_name: name || "unnamed",
@@ -1637,7 +1916,11 @@
                         item_type: item.item_type || "supplement"
                     };
                 })
-                : getSchedule();
+                : getSchedule().map(function (item) {
+                    return Object.assign({}, item, {
+                        completed: getLocalCompletion(item)
+                    });
+                });
             items = items.sort(function (a, b) { return a.time.localeCompare(b.time); });
             var completed = items.filter(function (item) { return item.completed; }).length;
             var progress = $("#schedule_progress");
@@ -1682,19 +1965,54 @@
             $("#notification_state").text(label);
         }
 
-        function showReminderToast(title, message) {
+        function dismissToast(toastOrElement) {
+            var toast = $(toastOrElement).closest(".toast");
+            if (!toast.length) {
+                return;
+            }
+            toast.fadeOut(180, function () {
+                toast.remove();
+            });
+        }
+
+        function markReminderDone(itemId, isAuthenticated) {
+            if (isAuthenticated) {
+                toggleTrackedCompletion(itemId, true);
+                return;
+            }
+            toggleScheduleCheck(itemId, true);
+        }
+
+        function showReminderToast(title, message, options) {
+            var settings = options || {};
             var toast = $(`
-                <div class="toast">
+                <div class="toast ${settings.persistent ? "is-persistent" : ""}">
                     <strong>${safeHtml(title)}</strong>
                     <p>${safeHtml(message)}</p>
                 </div>
             `);
-            $("#toast_stack").append(toast);
-            setTimeout(function () {
-                toast.fadeOut(220, function () {
-                    toast.remove();
+            if (settings.actions && settings.actions.length) {
+                var actionRow = $('<div class="toast-actions"></div>');
+                settings.actions.forEach(function (action) {
+                    var button = $('<button type="button"></button>').text(action.label);
+                    button.on("click", function (e) {
+                        e.stopPropagation();
+                        action.onClick(toast);
+                    });
+                    actionRow.append(button);
                 });
-            }, 5000);
+                toast.append(actionRow);
+            }
+            toast.on("click", function () {
+                dismissToast(toast);
+            });
+            $("#toast_stack").append(toast);
+            if (!settings.persistent) {
+                setTimeout(function () {
+                    dismissToast(toast);
+                }, settings.duration || 5000);
+            }
+            return toast;
         }
 
         function requestReminderPermission() {
@@ -1731,13 +2049,32 @@
         function fireReminder(item) {
             var title = "Vitabit reminder";
             var body = item.name + " at " + item.time;
-            showReminderToast(title, body);
+            showReminderToast(title, body, {
+                persistent: true,
+                actions: [
+                    {
+                        label: "Done for today",
+                        onClick: function (toast) {
+                            markReminderDone(item.id, authState.authenticated);
+                            dismissToast(toast);
+                        }
+                    },
+                    {
+                        label: "Dismiss",
+                        onClick: function (toast) {
+                            dismissToast(toast);
+                        }
+                    }
+                ]
+            });
 
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification(title, { body: body, tag: "vitabit-" + item.id });
             }
 
-            if ("vibrate" in navigator) {
+            playReminderSound();
+
+            if (getReminderSettings().vibration && "vibrate" in navigator) {
                 navigator.vibrate([200, 100, 200]);
             }
         }
@@ -1745,7 +2082,7 @@
         function checkReminders() {
             var now = new Date();
             var currentMinute = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
-            var today = now.toISOString().slice(0, 10);
+            var today = todayKeyLocal();
             var log = getReminderLog();
 
             getReminderItems().forEach(function (item) {
@@ -1980,7 +2317,7 @@
                             <h3>${safeHtml(item.name)}</h3>
                             <p>${safeHtml(item.benefit || "No description available.")}</p>
                             <div class="action-inline">
-                                <input class="catalog-time-input" type="time" value="08:00" onclick="event.stopPropagation()">
+                                ${renderTimePickerMarkup("08:00", "catalog-time-input")}
                                 <button type="button" onclick="event.stopPropagation(); addCatalogReminder(this, '${safeName}')">Add reminder</button>
                                 <button type="button" onclick="event.stopPropagation(); saveCatalogReminder(this, '${safeName}', '${safeHtml(item.category || "Supplement")}', 'supplement')">Save to profile</button>
                             </div>
@@ -2167,6 +2504,7 @@
             loadAccountData();
             loadCatalog();
             updateNotificationState();
+            syncReminderSettingsUi();
             startReminderLoop();
 
             if (window.location.hash) {
@@ -2191,6 +2529,63 @@
                 if (syncMealFile(this)) {
                     analyzeMeal();
                 }
+            });
+
+            $(document).on("pointerdown keydown", function () {
+                ensureAudioReady();
+            });
+
+            $("#sound_enabled").on("change", function () {
+                var settings = getReminderSettings();
+                settings.sound = this.checked;
+                setReminderSettings(settings);
+                if (this.checked) {
+                    ensureAudioReady();
+                }
+            });
+
+            $("#vibration_enabled").on("change", function () {
+                var settings = getReminderSettings();
+                settings.vibration = this.checked;
+                setReminderSettings(settings);
+                if (!this.checked && "vibrate" in navigator) {
+                    navigator.vibrate(0);
+                }
+            });
+
+            $(document).on("click", ".time-picker-shell", function (e) {
+                e.stopPropagation();
+                if ($(e.target).is(".time-picker-input")) {
+                    return;
+                }
+                openTimePicker(this);
+            });
+
+            $(document).on("keydown", ".time-picker-shell", function (e) {
+                e.stopPropagation();
+                handleTimePickerKeydown(e, this);
+            });
+
+            $(document).on("click", ".time-picker-input", function (e) {
+                e.stopPropagation();
+                openTimePickerInput(this);
+            });
+
+            $(document).on("focus", ".time-picker-input", function (e) {
+                e.stopPropagation();
+                openTimePickerInput(this);
+            });
+
+            $(document).on("input change", ".time-picker-input", function () {
+                syncTimePickerLabel(this);
+            });
+
+            $(document).on("keydown", ".time-picker-input", function (e) {
+                e.stopPropagation();
+            });
+
+            $(".time-picker-input").each(function () {
+                syncTimePickerLabel(this);
             });
 
             $("#result_list").on("click", ".vitamin-card", function () {
