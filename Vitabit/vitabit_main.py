@@ -988,6 +988,33 @@ def set_tracked_item_dashboard(user, item_id):
     return jsonify({"ok": True, "show_in_dashboard": show_in_dashboard})
 
 
+@app.post("/api/tracked-items/<item_id>/edit")
+@login_required
+def edit_tracked_item(user, item_id):
+    current_profile = get_current_profile(user_id=str(user["_id"]))
+    if not current_profile:
+        return jsonify({"error": "Select a profile first."}), 400
+
+    payload = request.get_json(silent=True) or {}
+    name = (payload.get("name") or "").strip()
+    schedule_time = (payload.get("schedule_time") or "08:00").strip() or "08:00"
+    if not name:
+        return jsonify({"error": "Name is required."}), 400
+
+    updates = {
+        "name": name,
+        "schedule_time": schedule_time,
+        "updated_at": utcnow(),
+    }
+    result = tracked_items_collection.update_one(
+        {"_id": ObjectId(item_id), "user_id": user["_id"], "profile_id": current_profile["_id"]},
+        {"$set": updates},
+    )
+    if not result.matched_count:
+        return jsonify({"error": "Tracked item not found."}), 404
+    return jsonify({"ok": True})
+
+
 @app.post("/api/tracked-items/<item_id>/completion")
 @login_required
 def set_tracked_item_completion(user, item_id):

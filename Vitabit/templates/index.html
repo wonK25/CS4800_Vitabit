@@ -876,6 +876,88 @@
             flex: 0 0 180px;
         }
 
+        .time-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px 16px;
+        }
+
+        .time-sheet.is-open {
+            display: flex;
+        }
+
+        .time-sheet-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(17, 28, 34, 0.42);
+        }
+
+        .time-sheet-panel {
+            position: relative;
+            width: min(520px, 100%);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 28px 70px rgba(20, 35, 44, 0.24);
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .time-sheet-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .time-sheet-header strong {
+            font-family: "Nunito", sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .time-sheet-close {
+            border: none;
+            background: rgba(47, 123, 127, 0.12);
+            color: var(--accent);
+            border-radius: 999px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .time-sheet-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 108px;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .time-sheet-field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .time-sheet-field span {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .time-sheet-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        @media (max-width: 640px) {
+            .time-sheet-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .detail-section {
             opacity: 1;
             transform: translateY(0);
@@ -1045,6 +1127,13 @@
             gap: 10px;
             flex-wrap: wrap;
             margin-bottom: var(--space-3);
+        }
+
+        .planner-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .reminder-setting {
@@ -1541,7 +1630,10 @@
                                 <input id="quick_time" class="time-picker-input" type="time" value="08:00">
                             </div>
                         </div>
-                        <button type="submit" class="subtle-button">Add Reminder</button>
+                        <div class="planner-actions">
+                            <button type="submit" class="subtle-button" id="quick_add_submit">Add Reminder</button>
+                            <button type="button" class="ghost-button" id="quick_add_cancel" style="display:none;">Cancel Edit</button>
+                        </div>
                     </form>
 
                     <div class="quick-chip-row" aria-label="Quick routine ideas">
@@ -1655,6 +1747,36 @@
             <br>&copy; 2026 Vitabit. All rights reserved.
         </footer>
     </main>
+    <div class="time-sheet" id="mobile_time_sheet" aria-hidden="true">
+        <div class="time-sheet-backdrop" onclick="closeMobileTimeSheet()"></div>
+        <div class="time-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="mobile_time_sheet_title">
+            <div class="time-sheet-header">
+                <strong id="mobile_time_sheet_title">Choose reminder time</strong>
+                <button type="button" class="time-sheet-close" onclick="closeMobileTimeSheet()">Close</button>
+            </div>
+            <div class="time-sheet-grid">
+                <label class="time-sheet-field">
+                    <span>Hour</span>
+                    <select id="mobile_time_hour"></select>
+                </label>
+                <label class="time-sheet-field">
+                    <span>Minute</span>
+                    <select id="mobile_time_minute"></select>
+                </label>
+                <label class="time-sheet-field">
+                    <span>AM / PM</span>
+                    <select id="mobile_time_period">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </label>
+            </div>
+            <div class="time-sheet-actions">
+                <button type="button" class="ghost-button" onclick="closeMobileTimeSheet()">Cancel</button>
+                <button type="button" class="button" onclick="applyMobileTimeSheet()">Apply</button>
+            </div>
+        </div>
+    </div>
     <div class="toast-stack" id="toast_stack" aria-live="polite"></div>
     <script>
         const SCHEDULE_KEY = "vitabit-schedule-v1";
@@ -1663,6 +1785,8 @@
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
         let reminderTimer = null;
         let audioContext = null;
+        let activeMobileTimeInput = null;
+        let reminderEditState = null;
 
         function trackEvent(eventName, params) {
             if (typeof gtag !== "function") return;
@@ -1704,6 +1828,67 @@
             return String(hour12).padStart(2, "0") + ":" + minute + " " + period;
         }
 
+        function isMobileTimeExperience() {
+            return !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+        }
+
+        function seedMobileTimeSheetOptions() {
+            var hourSelect = $("#mobile_time_hour");
+            var minuteSelect = $("#mobile_time_minute");
+            if (!hourSelect.children().length) {
+                for (var hour = 1; hour <= 12; hour += 1) {
+                    var hourText = String(hour).padStart(2, "0");
+                    hourSelect.append(`<option value="${hourText}">${hourText}</option>`);
+                }
+            }
+            if (!minuteSelect.children().length) {
+                for (var minute = 0; minute < 60; minute += 1) {
+                    var minuteText = String(minute).padStart(2, "0");
+                    minuteSelect.append(`<option value="${minuteText}">${minuteText}</option>`);
+                }
+            }
+        }
+
+        function openMobileTimeSheet(input) {
+            if (!input) {
+                return;
+            }
+            seedMobileTimeSheetOptions();
+            activeMobileTimeInput = input;
+            var value = $(input).val() || "08:00";
+            var parts = value.split(":");
+            var hour24 = parseInt(parts[0], 10);
+            var minute = parts[1] || "00";
+            var period = hour24 >= 12 ? "PM" : "AM";
+            var hour12 = String(hour24 % 12 || 12).padStart(2, "0");
+            $("#mobile_time_hour").val(hour12);
+            $("#mobile_time_minute").val(minute);
+            $("#mobile_time_period").val(period);
+            $("#mobile_time_sheet").addClass("is-open").attr("aria-hidden", "false");
+        }
+
+        function closeMobileTimeSheet() {
+            $("#mobile_time_sheet").removeClass("is-open").attr("aria-hidden", "true");
+            activeMobileTimeInput = null;
+        }
+
+        function applyMobileTimeSheet() {
+            if (!activeMobileTimeInput) {
+                closeMobileTimeSheet();
+                return;
+            }
+            var hour12 = parseInt($("#mobile_time_hour").val() || "08", 10);
+            var minute = $("#mobile_time_minute").val() || "00";
+            var period = $("#mobile_time_period").val() || "AM";
+            var hour24 = hour12 % 12;
+            if (period === "PM") {
+                hour24 += 12;
+            }
+            var value = String(hour24).padStart(2, "0") + ":" + minute;
+            $(activeMobileTimeInput).val(value).trigger("input").trigger("change");
+            closeMobileTimeSheet();
+        }
+
         function showNativeTimePicker(input, shouldFocus) {
             if (!input) {
                 return;
@@ -1724,10 +1909,18 @@
 
         function openTimePicker(target) {
             var input = $(target).closest(".time-picker").find(".time-picker-input")[0];
+            if (isMobileTimeExperience()) {
+                openMobileTimeSheet(input);
+                return;
+            }
             showNativeTimePicker(input, true);
         }
 
         function openTimePickerInput(input) {
+            if (isMobileTimeExperience()) {
+                openMobileTimeSheet(input);
+                return;
+            }
             showNativeTimePicker(input, false);
         }
 
@@ -1869,6 +2062,43 @@
 
         function removeScheduleItem(id) {
             setSchedule(getSchedule().filter(function (item) { return item.id !== id; }));
+            if (reminderEditState && reminderEditState.id === id && !reminderEditState.authenticated) {
+                resetReminderEditor();
+            }
+            renderSchedule();
+        }
+
+        function startReminderEdit(item, isAuthenticated) {
+            reminderEditState = {
+                id: item.id,
+                authenticated: !!isAuthenticated
+            };
+            $("#quick_name").val(item.name || "");
+            $("#quick_time").val(item.time || "08:00").trigger("input").trigger("change");
+            $("#quick_add_submit").text("Save Changes");
+            $("#quick_add_cancel").show();
+            openDetailSection("tracking-section");
+            $("#quick_name").trigger("focus");
+        }
+
+        function resetReminderEditor() {
+            reminderEditState = null;
+            $("#quick_name").val("");
+            $("#quick_time").val("08:00").trigger("input").trigger("change");
+            $("#quick_add_submit").text("Add Reminder");
+            $("#quick_add_cancel").hide();
+        }
+
+        function updateLocalScheduleItem(id, name, time) {
+            var next = getSchedule().map(function (item) {
+                if (item.id === id) {
+                    item.name = name;
+                    item.time = time || "08:00";
+                }
+                return item;
+            });
+            setSchedule(next);
+            resetReminderEditor();
             renderSchedule();
         }
 
@@ -1935,6 +2165,9 @@
 
             $("#schedule_list").empty();
             items.forEach(function (item) {
+                var safeId = safeHtml(item.id).replace(/'/g, "&#39;");
+                var safeName = safeHtml(item.name).replace(/'/g, "&#39;");
+                var safeTime = safeHtml(item.time).replace(/'/g, "&#39;");
                 $("#schedule_list").append(`
                     <li class="schedule-item">
                         <input type="checkbox" ${item.completed ? "checked" : ""} onchange="${authState.authenticated ? `toggleTrackedCompletion('${item.id}', this.checked)` : `toggleScheduleCheck('${item.id}', this.checked)`}">
@@ -1942,7 +2175,10 @@
                             <strong>${safeHtml(item.name)}</strong>
                             <p>${safeHtml(item.time)} reminder${item.item_type ? " · " + safeHtml(item.item_type) : ""}</p>
                         </div>
-                        <button onclick="${authState.authenticated ? `deleteTrackedItem('${item.id}')` : `removeScheduleItem('${item.id}')`}">Remove</button>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="inline-secondary reminder-edit-button" type="button" data-id='${safeId}' data-name='${safeName}' data-time='${safeTime}' data-auth='${authState.authenticated ? "1" : "0"}'>Edit</button>
+                            <button type="button" onclick="${authState.authenticated ? `deleteTrackedItem('${item.id}')` : `removeScheduleItem('${item.id}')`}">Remove</button>
+                        </div>
                     </li>
                 `);
             });
@@ -2247,6 +2483,25 @@
                 },
                 error: function (xhr) {
                     alert((xhr.responseJSON || {}).error || "Item could not be saved.");
+                }
+            });
+        }
+
+        function saveEditedTrackedItem(itemId, name, scheduleTime) {
+            $.ajax({
+                url: "/api/tracked-items/" + itemId + "/edit",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    name: name,
+                    schedule_time: scheduleTime || "08:00"
+                }),
+                success: function () {
+                    resetReminderEditor();
+                    loadAccountData();
+                },
+                error: function (xhr) {
+                    alert((xhr.responseJSON || {}).error || "Item could not be updated.");
                 }
             });
         }
@@ -2568,6 +2823,9 @@
 
             $(document).on("click", ".time-picker-input", function (e) {
                 e.stopPropagation();
+                if (isMobileTimeExperience()) {
+                    e.preventDefault();
+                }
                 openTimePickerInput(this);
             });
 
@@ -2588,6 +2846,12 @@
                 syncTimePickerLabel(this);
             });
 
+            $(document).on("keydown", function (e) {
+                if (e.key === "Escape" && $("#mobile_time_sheet").hasClass("is-open")) {
+                    closeMobileTimeSheet();
+                }
+            });
+
             $("#result_list").on("click", ".vitamin-card", function () {
                 var supplementName = $(this).find("h3").first().text().trim();
                 trackEvent("catalog_item_opened", {
@@ -2603,6 +2867,14 @@
                 }
             });
 
+            $(document).on("click", ".reminder-edit-button", function () {
+                startReminderEdit({
+                    id: $(this).data("id"),
+                    name: $(this).data("name"),
+                    time: $(this).data("time")
+                }, $(this).data("auth") === 1 || $(this).data("auth") === "1");
+            });
+
             $("#quick_add_form").on("submit", function (e) {
                 e.preventDefault();
                 var name = $("#quick_name").val().trim();
@@ -2610,12 +2882,24 @@
                 if (!name) {
                     return;
                 }
+                if (reminderEditState) {
+                    if (reminderEditState.authenticated) {
+                        saveEditedTrackedItem(reminderEditState.id, name, time || "08:00");
+                    } else {
+                        updateLocalScheduleItem(reminderEditState.id, name, time || "08:00");
+                    }
+                    return;
+                }
                 addToSchedule(name, time || "08:00");
                 trackEvent("quick_add_submitted", {
                     item_name: name,
                     reminder_time: time || "08:00"
                 });
-                $("#quick_name").val("");
+                resetReminderEditor();
+            });
+
+            $("#quick_add_cancel").on("click", function () {
+                resetReminderEditor();
             });
 
             $("#enable_notifications").on("click", function () {
