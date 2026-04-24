@@ -876,85 +876,50 @@
             flex: 0 0 180px;
         }
 
-        .time-sheet {
-            position: fixed;
-            inset: 0;
-            z-index: 90;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 20px 16px;
-        }
-
-        .time-sheet.is-open {
-            display: flex;
-        }
-
-        .time-sheet-backdrop {
+        .time-picker-menu {
             position: absolute;
-            inset: 0;
-            background: rgba(17, 28, 34, 0.42);
-        }
-
-        .time-sheet-panel {
-            position: relative;
-            width: min(520px, 100%);
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 28px 70px rgba(20, 35, 44, 0.24);
-            padding: 18px;
-            display: grid;
-            gap: 16px;
-        }
-
-        .time-sheet-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .time-sheet-header strong {
-            font-family: "Nunito", sans-serif;
-            font-size: 1.1rem;
-        }
-
-        .time-sheet-close {
-            border: none;
-            background: rgba(47, 123, 127, 0.12);
-            color: var(--accent);
-            border-radius: 999px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font: inherit;
-        }
-
-        .time-sheet-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 108px;
-            gap: 10px;
-            align-items: end;
-        }
-
-        .time-sheet-field {
-            display: grid;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 40;
+            width: 100%;
+            display: none;
             gap: 8px;
+            padding: 8px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-sm);
         }
 
-        .time-sheet-field span {
-            font-size: 0.9rem;
-            color: var(--muted);
+        .time-picker-menu.is-open {
+            display: grid;
         }
 
-        .time-sheet-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+        .time-picker-mobile-list {
+            width: 100%;
+            min-width: 0;
+            border: none;
+            border-radius: 12px;
+            background: rgba(244, 248, 251, 0.92);
+            color: var(--ink);
+            padding: 6px;
         }
 
-        @media (max-width: 640px) {
-            .time-sheet-grid {
-                grid-template-columns: 1fr;
+        .time-picker-mobile-list option {
+            padding: 10px 8px;
+            border-radius: 8px;
+        }
+
+        .time-picker-mobile-list option:checked {
+            background: rgba(47, 123, 127, 0.14);
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .time-picker-menu {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 88px;
+                align-items: start;
             }
         }
 
@@ -1629,6 +1594,14 @@
                                 </div>
                                 <input id="quick_time" class="time-picker-input" type="time" value="08:00">
                             </div>
+                            <div class="time-picker-menu">
+                                <select class="time-picker-mobile-list time-picker-hour-list" size="6" aria-label="Hour"></select>
+                                <select class="time-picker-mobile-list time-picker-minute-list" size="6" aria-label="Minute"></select>
+                                <select class="time-picker-mobile-list time-picker-period-list" size="2" aria-label="AM or PM">
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="planner-actions">
                             <button type="submit" class="subtle-button" id="quick_add_submit">Add Reminder</button>
@@ -1747,36 +1720,6 @@
             <br>&copy; 2026 Vitabit. All rights reserved.
         </footer>
     </main>
-    <div class="time-sheet" id="mobile_time_sheet" aria-hidden="true">
-        <div class="time-sheet-backdrop" onclick="closeMobileTimeSheet()"></div>
-        <div class="time-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="mobile_time_sheet_title">
-            <div class="time-sheet-header">
-                <strong id="mobile_time_sheet_title">Choose reminder time</strong>
-                <button type="button" class="time-sheet-close" onclick="closeMobileTimeSheet()">Close</button>
-            </div>
-            <div class="time-sheet-grid">
-                <label class="time-sheet-field">
-                    <span>Hour</span>
-                    <select id="mobile_time_hour"></select>
-                </label>
-                <label class="time-sheet-field">
-                    <span>Minute</span>
-                    <select id="mobile_time_minute"></select>
-                </label>
-                <label class="time-sheet-field">
-                    <span>AM / PM</span>
-                    <select id="mobile_time_period">
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                    </select>
-                </label>
-            </div>
-            <div class="time-sheet-actions">
-                <button type="button" class="ghost-button" onclick="closeMobileTimeSheet()">Cancel</button>
-                <button type="button" class="button" onclick="applyMobileTimeSheet()">Apply</button>
-            </div>
-        </div>
-    </div>
     <div class="toast-stack" id="toast_stack" aria-live="polite"></div>
     <script>
         const SCHEDULE_KEY = "vitabit-schedule-v1";
@@ -1785,7 +1728,6 @@
         let authState = { authenticated: false, profiles: [], current_profile: null, tracked_items: [], completion_map: {}, meal_history: [], dashboard_summary: {} };
         let reminderTimer = null;
         let audioContext = null;
-        let activeMobileTimeInput = null;
         let reminderEditState = null;
 
         function trackEvent(eventName, params) {
@@ -1814,6 +1756,14 @@
                         </div>
                         <input class="time-picker-input ${inputClass || ""}" type="time" value="${safeValue}">
                     </div>
+                    <div class="time-picker-menu">
+                        <select class="time-picker-mobile-list time-picker-hour-list" size="6" aria-label="Hour"></select>
+                        <select class="time-picker-mobile-list time-picker-minute-list" size="6" aria-label="Minute"></select>
+                        <select class="time-picker-mobile-list time-picker-period-list" size="2" aria-label="AM or PM">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
                 </div>
             `;
         }
@@ -1832,9 +1782,9 @@
             return !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
         }
 
-        function seedMobileTimeSheetOptions() {
-            var hourSelect = $("#mobile_time_hour");
-            var minuteSelect = $("#mobile_time_minute");
+        function seedInlineTimeOptions(picker) {
+            var hourSelect = picker.find(".time-picker-hour-list");
+            var minuteSelect = picker.find(".time-picker-minute-list");
             if (!hourSelect.children().length) {
                 for (var hour = 1; hour <= 12; hour += 1) {
                     var hourText = String(hour).padStart(2, "0");
@@ -1849,44 +1799,43 @@
             }
         }
 
-        function openMobileTimeSheet(input) {
-            if (!input) {
-                return;
-            }
-            seedMobileTimeSheetOptions();
-            activeMobileTimeInput = input;
-            var value = $(input).val() || "08:00";
+        function syncInlineTimeMenu(picker) {
+            seedInlineTimeOptions(picker);
+            var input = picker.find(".time-picker-input");
+            var value = input.val() || "08:00";
             var parts = value.split(":");
             var hour24 = parseInt(parts[0], 10);
             var minute = parts[1] || "00";
             var period = hour24 >= 12 ? "PM" : "AM";
             var hour12 = String(hour24 % 12 || 12).padStart(2, "0");
-            $("#mobile_time_hour").val(hour12);
-            $("#mobile_time_minute").val(minute);
-            $("#mobile_time_period").val(period);
-            $("#mobile_time_sheet").addClass("is-open").attr("aria-hidden", "false");
+            picker.find(".time-picker-hour-list").val(hour12);
+            picker.find(".time-picker-minute-list").val(minute);
+            picker.find(".time-picker-period-list").val(period);
         }
 
-        function closeMobileTimeSheet() {
-            $("#mobile_time_sheet").removeClass("is-open").attr("aria-hidden", "true");
-            activeMobileTimeInput = null;
+        function closeInlineTimeMenus(exceptPicker) {
+            $(".time-picker-menu.is-open").each(function () {
+                var menu = $(this);
+                if (exceptPicker && menu.closest(".time-picker")[0] === exceptPicker[0]) {
+                    return;
+                }
+                menu.removeClass("is-open");
+            });
         }
 
-        function applyMobileTimeSheet() {
-            if (!activeMobileTimeInput) {
-                closeMobileTimeSheet();
+        function updateTimeFromInlineMenu(picker) {
+            if (!picker || !picker.length) {
                 return;
             }
-            var hour12 = parseInt($("#mobile_time_hour").val() || "08", 10);
-            var minute = $("#mobile_time_minute").val() || "00";
-            var period = $("#mobile_time_period").val() || "AM";
+            var hour12 = parseInt(picker.find(".time-picker-hour-list").val() || "08", 10);
+            var minute = picker.find(".time-picker-minute-list").val() || "00";
+            var period = picker.find(".time-picker-period-list").val() || "AM";
             var hour24 = hour12 % 12;
             if (period === "PM") {
                 hour24 += 12;
             }
             var value = String(hour24).padStart(2, "0") + ":" + minute;
-            $(activeMobileTimeInput).val(value).trigger("input").trigger("change");
-            closeMobileTimeSheet();
+            picker.find(".time-picker-input").val(value).trigger("input").trigger("change");
         }
 
         function showNativeTimePicker(input, shouldFocus) {
@@ -1910,7 +1859,14 @@
         function openTimePicker(target) {
             var input = $(target).closest(".time-picker").find(".time-picker-input")[0];
             if (isMobileTimeExperience()) {
-                openMobileTimeSheet(input);
+                var picker = $(target).closest(".time-picker");
+                syncInlineTimeMenu(picker);
+                var menu = picker.find(".time-picker-menu");
+                var shouldOpen = !menu.hasClass("is-open");
+                closeInlineTimeMenus(shouldOpen ? picker : null);
+                if (shouldOpen) {
+                    menu.addClass("is-open");
+                }
                 return;
             }
             showNativeTimePicker(input, true);
@@ -1918,7 +1874,10 @@
 
         function openTimePickerInput(input) {
             if (isMobileTimeExperience()) {
-                openMobileTimeSheet(input);
+                var picker = $(input).closest(".time-picker");
+                syncInlineTimeMenu(picker);
+                closeInlineTimeMenus(picker);
+                picker.find(".time-picker-menu").addClass("is-open");
                 return;
             }
             showNativeTimePicker(input, false);
@@ -2842,13 +2801,28 @@
                 e.stopPropagation();
             });
 
+            $(document).on("change input", ".time-picker-hour-list, .time-picker-minute-list, .time-picker-period-list", function (e) {
+                e.stopPropagation();
+                updateTimeFromInlineMenu($(this).closest(".time-picker"));
+            });
+
+            $(document).on("click", ".time-picker-menu", function (e) {
+                e.stopPropagation();
+            });
+
             $(".time-picker-input").each(function () {
                 syncTimePickerLabel(this);
             });
 
+            $(document).on("click", function () {
+                if (isMobileTimeExperience()) {
+                    closeInlineTimeMenus();
+                }
+            });
+
             $(document).on("keydown", function (e) {
-                if (e.key === "Escape" && $("#mobile_time_sheet").hasClass("is-open")) {
-                    closeMobileTimeSheet();
+                if (e.key === "Escape" && isMobileTimeExperience()) {
+                    closeInlineTimeMenus();
                 }
             });
 
