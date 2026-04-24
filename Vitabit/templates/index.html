@@ -877,13 +877,11 @@
         }
 
         .time-picker-menu {
-            position: absolute;
-            top: calc(100% + 6px);
-            left: 0;
-            z-index: 40;
+            position: relative;
             width: 100%;
             display: none;
             gap: 8px;
+            margin-top: 6px;
             padding: 8px;
             border: 1px solid var(--line);
             border-radius: 18px;
@@ -920,6 +918,19 @@
             .time-picker-menu {
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 88px;
                 align-items: start;
+            }
+        }
+
+        @media (min-width: 901px) {
+            .time-picker-menu {
+                width: min(520px, calc(100vw - 80px));
+                grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) 96px;
+                align-items: start;
+            }
+
+            .time-picker-mobile-list {
+                min-height: 220px;
+                max-height: 220px;
             }
         }
 
@@ -1099,6 +1110,16 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+        }
+
+        #quick_add_cancel:hover,
+        #quick_add_cancel:active,
+        #quick_add_cancel:focus,
+        #quick_add_cancel:focus-visible {
+            background: rgba(47, 123, 127, 0.12);
+            color: var(--accent);
+            border-color: rgba(47, 123, 127, 0.2);
+            box-shadow: none;
         }
 
         .reminder-setting {
@@ -1857,30 +1878,27 @@
         }
 
         function openTimePicker(target) {
-            var input = $(target).closest(".time-picker").find(".time-picker-input")[0];
-            if (isMobileTimeExperience()) {
-                var picker = $(target).closest(".time-picker");
-                syncInlineTimeMenu(picker);
-                var menu = picker.find(".time-picker-menu");
-                var shouldOpen = !menu.hasClass("is-open");
-                closeInlineTimeMenus(shouldOpen ? picker : null);
-                if (shouldOpen) {
-                    menu.addClass("is-open");
-                }
+            var picker = $(target).closest(".time-picker");
+            if (!picker.length) {
                 return;
             }
-            showNativeTimePicker(input, true);
+            syncInlineTimeMenu(picker);
+            var menu = picker.find(".time-picker-menu");
+            var shouldOpen = !menu.hasClass("is-open");
+            closeInlineTimeMenus(shouldOpen ? picker : null);
+            if (shouldOpen) {
+                menu.addClass("is-open");
+            }
         }
 
         function openTimePickerInput(input) {
-            if (isMobileTimeExperience()) {
-                var picker = $(input).closest(".time-picker");
-                syncInlineTimeMenu(picker);
-                closeInlineTimeMenus(picker);
-                picker.find(".time-picker-menu").addClass("is-open");
+            var picker = $(input).closest(".time-picker");
+            if (!picker.length) {
                 return;
             }
-            showNativeTimePicker(input, false);
+            syncInlineTimeMenu(picker);
+            closeInlineTimeMenus(picker);
+            picker.find(".time-picker-menu").addClass("is-open");
         }
 
         function handleTimePickerKeydown(event, target) {
@@ -2032,6 +2050,7 @@
                 id: item.id,
                 authenticated: !!isAuthenticated
             };
+            $("body").addClass("is-editing-reminder");
             $("#quick_name").val(item.name || "");
             $("#quick_time").val(item.time || "08:00").trigger("input").trigger("change");
             $("#quick_add_submit").text("Save Changes");
@@ -2042,6 +2061,7 @@
 
         function resetReminderEditor() {
             reminderEditState = null;
+            $("body").removeClass("is-editing-reminder");
             $("#quick_name").val("");
             $("#quick_time").val("08:00").trigger("input").trigger("change");
             $("#quick_add_submit").text("Add Reminder");
@@ -2132,7 +2152,7 @@
                         <input type="checkbox" ${item.completed ? "checked" : ""} onchange="${authState.authenticated ? `toggleTrackedCompletion('${item.id}', this.checked)` : `toggleScheduleCheck('${item.id}', this.checked)`}">
                         <div>
                             <strong>${safeHtml(item.name)}</strong>
-                            <p>${safeHtml(item.time)} reminder${item.item_type ? " · " + safeHtml(item.item_type) : ""}</p>
+                            <p>${safeHtml(item.time)} reminder</p>
                         </div>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             <button class="inline-secondary reminder-edit-button" type="button" data-id='${safeId}' data-name='${safeName}' data-time='${safeTime}' data-auth='${authState.authenticated ? "1" : "0"}'>Edit</button>
@@ -2782,9 +2802,7 @@
 
             $(document).on("click", ".time-picker-input", function (e) {
                 e.stopPropagation();
-                if (isMobileTimeExperience()) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
                 openTimePickerInput(this);
             });
 
@@ -2815,13 +2833,11 @@
             });
 
             $(document).on("click", function () {
-                if (isMobileTimeExperience()) {
-                    closeInlineTimeMenus();
-                }
+                closeInlineTimeMenus();
             });
 
             $(document).on("keydown", function (e) {
-                if (e.key === "Escape" && isMobileTimeExperience()) {
+                if (e.key === "Escape") {
                     closeInlineTimeMenus();
                 }
             });
