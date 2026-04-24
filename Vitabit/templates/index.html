@@ -765,6 +765,11 @@
             flex-wrap: wrap;
         }
 
+        .section-title-with-mascot > div {
+            min-width: 0;
+            flex: 1 1 260px;
+        }
+
         .section-mascot {
             width: 76px;
             height: auto;
@@ -961,6 +966,7 @@
 
         .search-box input, .planner-form input, .chat-input textarea, .upload-form textarea, .upload-form input[type="file"] {
             width: 100%;
+            max-width: 100%;
             border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.8);
             border-radius: 14px;
@@ -1311,6 +1317,17 @@
             .split-grid { grid-template-columns: 1fr; }
             .hero-side-stack, .meal-upload-grid { grid-template-columns: 1fr; }
             .analysis-grid { grid-template-columns: 1fr; }
+            .section-title-with-mascot {
+                align-items: flex-start;
+            }
+            .section-mascot {
+                width: 64px;
+            }
+            .meal-dropzone,
+            .upload-form,
+            .meal-upload-grid {
+                min-width: 0;
+            }
             .topbar {
                 align-items: flex-start;
                 gap: var(--space-3);
