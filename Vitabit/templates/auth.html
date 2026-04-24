@@ -225,12 +225,17 @@
             }
 
             .auth-mascot-row {
-                display: grid;
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .auth-mascot {
+                padding: 8px 4px;
+                border-radius: 16px;
             }
 
             .auth-mascot img {
-                max-width: 88px;
+                max-width: 64px;
             }
 
             button,
