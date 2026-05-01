@@ -15,3 +15,6 @@ The current version includes catalog search, household profiles, AI wellness coa
 - Database: MongoDB Atlas
 - Deployment: Vercel
 - CI/CD: GitHub Actions
+
+## Link
+- https://vitabitapp.vercel.app/
